@@ -38,6 +38,10 @@ defmodule Table.State do
     join_table(table, player, desired_seat, empty_seat?)
   end
 
+  def join_table(table, _player, _desired_seat) do
+    table
+  end
+
   def join_table(%{seat_map: seat_map} = table, player, desired_seat, true = _empty_seat?) do
     {:ok, %{table | seat_map: Map.put(seat_map, desired_seat, player)}}
   end
@@ -45,5 +49,14 @@ defmodule Table.State do
   def join_table(table, _player, _desired_seat, _false = _empty_seat?) do
     IO.puts("seat taken")
     {:seat_taken, table}
+  end
+
+  def leave_table(%{seat_map: seat_map} = table, seat)
+      when seat in 1..10 do
+    %{table | seat_map: Map.put(seat_map, seat, :empty_seat)}
+  end
+
+  def leave_table(table, _seat) do
+    table
   end
 end

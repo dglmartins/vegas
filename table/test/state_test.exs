@@ -82,4 +82,18 @@ defmodule StateTest do
     assert status == :seat_taken
     assert table.seat_map[2] == player
   end
+
+  test "player leaves" do
+    table = State.new()
+    player = Player.new("Danilo", 200)
+
+    {status, table} = State.join_table(table, player, 2)
+
+    assert status == :ok
+    assert table.seat_map[2] == player
+
+    table = State.leave_table(table, 2)
+
+    assert table.seat_map[2] == :empty_seat
+  end
 end
