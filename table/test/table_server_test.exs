@@ -142,6 +142,23 @@ defmodule TableServerTest do
 
       assert Enum.count(reshuffled_ets_table.deck) == 52
     end
+
+    test "updates table state in ETS when dealer is moved to new seat or to the left" do
+      table_id = generate_table_id()
+
+      {:ok, _pid} = TableServer.start_link(table_id)
+
+      {:ok, dealer_seat_index} = TableServer.move_dealer_to_seat({table_id, 3})
+
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert ets_table.dealer_seat_index == 3
+
+      {:ok, dealer_seat_index} = TableServer.move_dealer_to_left(table_id)
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert ets_table.dealer_seat_index == 4
+    end
   end
 
   describe "table_pid" do

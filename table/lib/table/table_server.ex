@@ -111,11 +111,13 @@ defmodule Table.TableServer do
 
   def handle_call({:move_dealer_to_seat, new_seat_index}, _from, table_state) do
     table_state = State.move_dealer_to_seat(table_state, new_seat_index)
+    :ets.insert(:tables_table, {my_table_id(), table_state})
     {:reply, {:ok, new_seat_index}, table_state, @timeout}
   end
 
   def handle_call(:move_dealer_to_left, _from, table_state) do
     table_state = State.move_dealer_to_left(table_state)
+    :ets.insert(:tables_table, {my_table_id(), table_state})
     {:reply, {:ok, table_state.dealer_seat_index}, table_state, @timeout}
   end
 
