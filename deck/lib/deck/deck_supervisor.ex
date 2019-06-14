@@ -32,7 +32,7 @@ defmodule Deck.DeckSupervisor do
   Terminates the `GameServer` process normally. It won't be restarted.
   """
   def stop_deck(deck_id) do
-    # DeckServer.stop_deck(deck_id)
+    DeckServer.stop_deck(deck_id)
 
     child_pid = DeckServer.deck_pid(deck_id)
     DynamicSupervisor.terminate_child(__MODULE__, child_pid)

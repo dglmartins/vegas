@@ -56,23 +56,20 @@ defmodule Deck.DeckServer do
   # Server Callbacks
 
   def init(deck_id) do
-    # deck =
-    #   case IO.inspect(:ets.info(:decks_table)) do
-    #     # case :ets.lookup(:decks_table, deck_id) do
-    #     :undefined ->
-    #       IO.puts("its undefined")
-    #       :ets.new(:decks_table, [:private, :named_table])
-    #       deck = Create.new()
-    #       :ets.insert(:decks_table, {deck_id, deck})
-    #       deck
-    #
-    #     _ ->
-    #       IO.inspect(get_deck_from_ets(deck_id))
-    #   end
+    deck =
+      case :ets.lookup(:decks_table, deck_id) do
+        [] ->
+          deck = Create.new()
+          :ets.insert(:decks_table, {deck_id, deck})
+          deck
+
+        [{^deck_id, deck}] ->
+          deck
+      end
 
     Logger.info("Spawned deck server process named '#{deck_id}'.")
 
-    {:ok, Create.new(), @timeout}
+    {:ok, deck, @timeout}
   end
 
   def handle_call(:deal_card, _from, []) do
@@ -80,7 +77,7 @@ defmodule Deck.DeckServer do
   end
 
   def handle_call(:deal_card, _from, [card_dealt | rest_of_deck]) do
-    # :ets.insert(:decks_table, {my_deck_id(), rest_of_deck})
+    :ets.insert(:decks_table, {my_deck_id(), rest_of_deck})
     {:reply, card_dealt, rest_of_deck, @timeout}
   end
 
@@ -89,7 +86,9 @@ defmodule Deck.DeckServer do
   end
 
   def handle_call(:reshuffle, _from, _deck) do
-    {:reply, :ok, Create.new(), @timeout}
+    deck = Create.new()
+    :ets.insert(:decks_table, {my_deck_id(), deck})
+    {:reply, :ok, deck, @timeout}
   end
 
   def handle_info(:timeout, deck) do
@@ -98,7 +97,7 @@ defmodule Deck.DeckServer do
   end
 
   def terminate({:shutdown, :timeout}, _game) do
-    # :ets.delete(:decks_table, my_deck_id())
+    :ets.delete(:decks_table, my_deck_id())
     :ok
   end
 
@@ -106,14 +105,9 @@ defmodule Deck.DeckServer do
     :ok
   end
 
-  # def stop_deck(deck_id) do
-  #   :ets.delete(:decks_table, deck_id)
-  # end
-
-  # defp get_deck_from_ets(deck_id) do
-  #   [{^deck_id, deck}] = :ets.lookup(:decks_table, deck_id)
-  #   deck
-  # end
+  def stop_deck(deck_id) do
+    :ets.delete(:decks_table, deck_id)
+  end
 
   defp my_deck_id do
     Registry.keys(Deck.DeckRegistry, self()) |> List.first()

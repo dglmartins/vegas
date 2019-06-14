@@ -2,7 +2,7 @@ defmodule DeckServerTest do
   use ExUnit.Case
   doctest Deck.DeckServer
 
-  alias Deck.DeckServer
+  alias Deck.{DeckServer, Create}
 
   test "spawning a deck server process" do
     deck_id = generate_deck_id()
@@ -57,6 +57,62 @@ defmodule DeckServerTest do
 
     assert card.rank == nil
     assert card.suit == nil
+  end
+
+  test "stores initial state in ETS when started" do
+    deck_id = generate_deck_id()
+
+    {:ok, _pid} = DeckServer.start_link(deck_id)
+
+    assert [{^deck_id, deck}] = :ets.lookup(:decks_table, deck_id)
+
+    [first_card | _rest_of_deck] = deck
+
+    assert first_card == DeckServer.deal_card(deck_id)
+  end
+
+  test "gets its initial state from ETS if previously stored" do
+    deck_id = generate_deck_id()
+
+    deck = Create.new()
+
+    [_dealt_card | rest_of_deck] = deck
+
+    :ets.insert(:decks_table, {deck_id, rest_of_deck})
+
+    {:ok, _pid} = DeckServer.start_link(deck_id)
+
+    assert DeckServer.count_deck(deck_id) == 51
+  end
+
+  test "updates state in ETS when card is dealt" do
+    deck_id = generate_deck_id()
+
+    {:ok, _pid} = DeckServer.start_link(deck_id)
+
+    card = DeckServer.deal_card(deck_id)
+
+    [{^deck_id, ets_deck}] = :ets.lookup(:decks_table, deck_id)
+
+    assert Enum.count(ets_deck) == 51
+  end
+
+  test "updates state in ETS when deck is shuffled" do
+    deck_id = generate_deck_id()
+
+    {:ok, _pid} = DeckServer.start_link(deck_id)
+
+    card = DeckServer.deal_card(deck_id)
+
+    [{^deck_id, ets_deck}] = :ets.lookup(:decks_table, deck_id)
+
+    assert Enum.count(ets_deck) == 51
+
+    DeckServer.reshuffle(deck_id)
+
+    [{^deck_id, reshuffled_ets_deck}] = :ets.lookup(:decks_table, deck_id)
+
+    assert Enum.count(reshuffled_ets_deck) == 52
   end
 
   describe "deck_pid" do
