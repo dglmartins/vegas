@@ -61,10 +61,10 @@ defmodule DeckServerTest do
 
   describe "deck_pid" do
     test "returns a PID if it has been registered" do
-      hand_id = generate_deck_id()
+      deck_id = generate_deck_id()
 
-      {:ok, pid} = DeckServer.start_link(hand_id)
-      assert ^pid = DeckServer.deck_pid(hand_id)
+      {:ok, pid} = DeckServer.start_link(deck_id)
+      assert ^pid = DeckServer.deck_pid(deck_id)
     end
 
     test "returns nil if the deck does not exist" do
@@ -73,6 +73,6 @@ defmodule DeckServerTest do
   end
 
   defp generate_deck_id() do
-    "hand-#{:rand.uniform(1_000_000)}"
+    "deck-#{:rand.uniform(1_000_000)}"
   end
 end
