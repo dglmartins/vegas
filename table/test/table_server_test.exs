@@ -60,7 +60,7 @@ defmodule TableServerTest do
     assert TableServer.count_deck(table_id) == 0
   end
 
-  test "gets dealer seat and moves dealer seat" do
+  test "gets dealer seat, moves dealer seat, moves dealer to left" do
     table_id = generate_table_id()
 
     {:ok, _pid} = TableServer.start_link(table_id)
@@ -69,13 +69,20 @@ defmodule TableServerTest do
 
     assert dealer_seat_index == nil
 
-    {:ok, new_seat_index} = TableServer.move_dealer_to_seat({table_id, 3})
+    {:ok, new_seat_index} = TableServer.move_dealer_to_seat({table_id, 8})
 
-    assert new_seat_index == 3
+    assert new_seat_index == 8
+    assert new_seat_index == TableServer.get_dealer_seat_index(table_id)
 
-    dealer_seat_index = TableServer.get_dealer_seat_index(table_id)
+    {:ok, new_seat_index} = TableServer.move_dealer_to_left(table_id)
 
-    assert new_seat_index == dealer_seat_index
+    assert new_seat_index == 9
+    assert new_seat_index == TableServer.get_dealer_seat_index(table_id)
+
+    {:ok, new_seat_index} = TableServer.move_dealer_to_left(table_id)
+
+    assert new_seat_index == 0
+    assert new_seat_index == TableServer.get_dealer_seat_index(table_id)
   end
 
   describe "ets" do
