@@ -2,7 +2,7 @@ defmodule TableServerTest do
   use ExUnit.Case
   doctest Table.TableServer
 
-  alias Table.{TableServer, State}
+  alias Table.{TableServer, State, Player}
 
   test "spawning a deck server process" do
     table_id = generate_table_id()
@@ -83,6 +83,39 @@ defmodule TableServerTest do
 
     assert new_seat == 1
     assert new_seat == TableServer.get_dealer_seat(table_id)
+  end
+
+  test "joins and leaves table, gets seat map" do
+    table_id = generate_table_id()
+
+    {:ok, _pid} = TableServer.start_link(table_id)
+
+    player = Player.new("Danilo", 200)
+    player_two = Player.new("Paula", 200)
+
+    status = TableServer.join_table({table_id, player, 2})
+    status_two = TableServer.join_table({table_id, player_two, 2})
+
+    assert status == :ok
+    assert status_two == :seat_taken
+
+    seat_map = TableServer.get_seat_map(table_id)
+
+    assert seat_map[2] == player
+
+    :ok = TableServer.leave_table({table_id, 2})
+
+    seat_map = TableServer.get_seat_map(table_id)
+
+    assert seat_map[2] == :empty_seat
+
+    status_two = TableServer.join_table({table_id, player_two, 2})
+
+    assert status_two == :ok
+
+    seat_map = TableServer.get_seat_map(table_id)
+
+    assert seat_map[2] == player_two
   end
 
   describe "ets" do

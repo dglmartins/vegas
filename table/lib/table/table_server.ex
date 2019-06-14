@@ -48,6 +48,18 @@ defmodule Table.TableServer do
     GenServer.call(via_tuple(table_id), :move_dealer_to_left)
   end
 
+  def get_seat_map(table_id) do
+    GenServer.call(via_tuple(table_id), :get_seat_map)
+  end
+
+  def join_table({table_id, player, desired_seat}) do
+    GenServer.call(via_tuple(table_id), {:join_table, player, desired_seat})
+  end
+
+  def leave_table({table_id, seat}) do
+    GenServer.call(via_tuple(table_id), {:leave_table, seat})
+  end
+
   @doc """
   Returns a tuple used to register and lookup a table server process by id.
   """
@@ -119,6 +131,22 @@ defmodule Table.TableServer do
     table_state = State.move_dealer_to_left(table_state)
     :ets.insert(:tables_table, {my_table_id(), table_state})
     {:reply, {:ok, table_state.dealer_seat}, table_state, @timeout}
+  end
+
+  def handle_call(:get_seat_map, _from, table_state) do
+    {:reply, table_state.seat_map, table_state, @timeout}
+  end
+
+  def handle_call({:join_table, player, desired_seat}, _from, table_state) do
+    {status, table_state} = State.join_table(table_state, player, desired_seat)
+    :ets.insert(:tables_table, {my_table_id(), table_state})
+    {:reply, status, table_state, @timeout}
+  end
+
+  def handle_call({:leave_table, seat}, _from, table_state) do
+    table_state = State.leave_table(table_state, seat)
+    :ets.insert(:tables_table, {my_table_id(), table_state})
+    {:reply, :ok, table_state, @timeout}
   end
 
   def handle_info(:timeout, table_state) do
