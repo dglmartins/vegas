@@ -36,6 +36,10 @@ defmodule Table.TableServer do
     GenServer.call(via_tuple(table_id), :count_deck)
   end
 
+  def dealer_to_seat({table_id, seat}) do
+    GenServer.call(via_tuple(table_id), :dealer_to_seat)
+  end
+
   @doc """
   Returns a tuple used to register and lookup a table server process by id.
   """

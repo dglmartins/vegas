@@ -15,4 +15,27 @@ defmodule StateTest do
       assert Enum.at(table.seat_list, index) == :empty_seat
     end
   end
+
+  test "moves dealer seat, does not move if not integer or if index > 9" do
+    table = State.new()
+    assert table.dealer_seat_index == nil
+
+    table =
+      table
+      |> State.move_dealer_to_seat(3)
+
+    assert table.dealer_seat_index == 3
+
+    table =
+      table
+      |> State.move_dealer_to_seat("not an integer")
+
+    assert table.dealer_seat_index == 3
+
+    table =
+      table
+      |> State.move_dealer_to_seat(10)
+
+    assert table.dealer_seat_index == 3
+  end
 end
