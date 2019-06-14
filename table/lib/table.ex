@@ -1,18 +1,10 @@
 defmodule Table do
-  @moduledoc """
-  Documentation for Table.
-  """
+  alias Table.{TableSupervisor, TableServer}
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Table.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
+  defdelegate new(table_id), to: TableSupervisor
+  defdelegate table_pid(table_id), to: TableServer
+  defdelegate table_ids(), to: TableSupervisor
+  defdelegate deal_card(table_id), to: TableServer
+  defdelegate reshuffle(table_id), to: TableServer
+  defdelegate stop_table(table_id), to: TableSupervisor
 end

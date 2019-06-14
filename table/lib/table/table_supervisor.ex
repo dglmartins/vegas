@@ -1,11 +1,11 @@
-defmodule Deck.DeckSupervisor do
+defmodule Table.TableSupervisor do
   @moduledoc """
   A supervisor that starts `Server` processes dynamically.
   """
 
   use DynamicSupervisor
 
-  alias Deck.DeckServer
+  alias Table.TableServer
 
   def start_link(_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -16,12 +16,12 @@ defmodule Deck.DeckSupervisor do
   end
 
   @doc """
-  Starts a `GameServer` process and supervises it.
+  Starts a `TableServer` process and supervises it.
   """
-  def create_deck(deck_id) do
+  def new(table_id) do
     child_spec = %{
-      id: DeckServer,
-      start: {DeckServer, :start_link, [deck_id]},
+      id: TableServer,
+      start: {TableServer, :start_link, [table_id]},
       restart: :transient
     }
 
@@ -29,20 +29,20 @@ defmodule Deck.DeckSupervisor do
   end
 
   @doc """
-  Terminates the `GameServer` process normally. It won't be restarted.
+  Terminates the `TableServer` process normally. It won't be restarted.
   """
-  def stop_deck(deck_id) do
-    DeckServer.stop_deck(deck_id)
+  def stop_table(table_id) do
+    TableServer.stop_table(table_id)
 
-    child_pid = DeckServer.deck_pid(deck_id)
+    child_pid = TableServer.table_pid(table_id)
     DynamicSupervisor.terminate_child(__MODULE__, child_pid)
   end
 
-  # get decks running
-  def deck_ids() do
+  # get tables running
+  def table_ids() do
     DynamicSupervisor.which_children(__MODULE__)
-    |> Enum.map(fn {_, game_pid, _, _} ->
-      Registry.keys(Deck.DeckRegistry, game_pid) |> List.first()
+    |> Enum.map(fn {_, table_pid, _, _} ->
+      Registry.keys(Table.TableRegistry, table_pid) |> List.first()
     end)
     |> Enum.sort()
   end
