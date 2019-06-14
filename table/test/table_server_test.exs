@@ -60,61 +60,81 @@ defmodule TableServerTest do
     assert TableServer.count_deck(table_id) == 0
   end
 
-  test "stores initial table state in ETS when started" do
+  test "gets dealer seat and moves dealer seat" do
     table_id = generate_table_id()
 
     {:ok, _pid} = TableServer.start_link(table_id)
 
-    assert [{^table_id, %State{deck: deck}}] = :ets.lookup(:tables_table, table_id)
+    dealer_seat_index = TableServer.get_dealer_seat_index(table_id)
 
-    [first_card | _rest_of_deck] = deck
+    assert dealer_seat_index == nil
 
-    assert first_card == TableServer.deal_card(table_id)
+    {:ok, new_seat_index} = TableServer.move_dealer_to_seat({table_id, 3})
+
+    assert new_seat_index == 3
+
+    dealer_seat_index = TableServer.get_dealer_seat_index(table_id)
+
+    assert new_seat_index == dealer_seat_index
   end
 
-  test "gets the table initial state from ETS if previously stored" do
-    table_id = generate_table_id()
+  describe "ets" do
+    test "stores initial table state in ETS when started" do
+      table_id = generate_table_id()
 
-    state = State.new()
+      {:ok, _pid} = TableServer.start_link(table_id)
 
-    [_dealt_card | rest_of_deck] = state.deck
+      assert [{^table_id, %State{deck: deck}}] = :ets.lookup(:tables_table, table_id)
 
-    new_state = %{state | deck: rest_of_deck}
-    :ets.insert(:tables_table, {table_id, new_state})
+      [first_card | _rest_of_deck] = deck
 
-    {:ok, _pid} = TableServer.start_link(table_id)
+      assert first_card == TableServer.deal_card(table_id)
+    end
 
-    assert TableServer.count_deck(table_id) == 51
-  end
+    test "gets the table initial state from ETS if previously stored" do
+      table_id = generate_table_id()
 
-  test "updates table state in ETS when card is dealt" do
-    table_id = generate_table_id()
+      state = State.new()
 
-    {:ok, _pid} = TableServer.start_link(table_id)
+      [_dealt_card | rest_of_deck] = state.deck
 
-    card = TableServer.deal_card(table_id)
+      new_state = %{state | deck: rest_of_deck}
+      :ets.insert(:tables_table, {table_id, new_state})
 
-    [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+      {:ok, _pid} = TableServer.start_link(table_id)
 
-    assert Enum.count(ets_table.deck) == 51
-  end
+      assert TableServer.count_deck(table_id) == 51
+    end
 
-  test "updates table state in ETS when deck is shuffled" do
-    table_id = generate_table_id()
+    test "updates table state in ETS when card is dealt" do
+      table_id = generate_table_id()
 
-    {:ok, _pid} = TableServer.start_link(table_id)
+      {:ok, _pid} = TableServer.start_link(table_id)
 
-    card = TableServer.deal_card(table_id)
+      card = TableServer.deal_card(table_id)
 
-    [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
-    assert Enum.count(ets_table.deck) == 51
+      assert Enum.count(ets_table.deck) == 51
+    end
 
-    TableServer.reshuffle(table_id)
+    test "updates table state in ETS when deck is shuffled" do
+      table_id = generate_table_id()
 
-    [{^table_id, reshuffled_ets_table}] = :ets.lookup(:tables_table, table_id)
+      {:ok, _pid} = TableServer.start_link(table_id)
 
-    assert Enum.count(reshuffled_ets_table.deck) == 52
+      card = TableServer.deal_card(table_id)
+
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert Enum.count(ets_table.deck) == 51
+
+      TableServer.reshuffle(table_id)
+
+      [{^table_id, reshuffled_ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert Enum.count(reshuffled_ets_table.deck) == 52
+    end
   end
 
   describe "table_pid" do

@@ -36,8 +36,12 @@ defmodule Table.TableServer do
     GenServer.call(via_tuple(table_id), :count_deck)
   end
 
-  def dealer_to_seat({table_id, seat}) do
-    GenServer.call(via_tuple(table_id), :dealer_to_seat)
+  def get_dealer_seat_index(table_id) do
+    GenServer.call(via_tuple(table_id), :get_dealer_seat_index)
+  end
+
+  def move_dealer_to_seat({table_id, new_seat_index}) do
+    GenServer.call(via_tuple(table_id), {:move_dealer_to_seat, new_seat_index})
   end
 
   @doc """
@@ -95,6 +99,15 @@ defmodule Table.TableServer do
     table_state = %{table_state | deck: deck}
     :ets.insert(:tables_table, {my_table_id(), table_state})
     {:reply, :ok, table_state, @timeout}
+  end
+
+  def handle_call(:get_dealer_seat_index, _from, table_state) do
+    {:reply, table_state.dealer_seat_index, table_state, @timeout}
+  end
+
+  def handle_call({:move_dealer_to_seat, new_seat_index}, _from, table_state) do
+    table_state = State.move_dealer_to_seat(table_state, new_seat_index)
+    {:reply, {:ok, new_seat_index}, table_state, @timeout}
   end
 
   def handle_info(:timeout, table_state) do
