@@ -38,4 +38,33 @@ defmodule StateTest do
 
     assert table.dealer_seat_index == 3
   end
+
+  test "moves dealer seat to left, moves to zero if current index is 9" do
+    table = State.new()
+    assert table.dealer_seat_index == nil
+
+    table =
+      table
+      |> State.move_dealer_to_left()
+
+    assert table.dealer_seat_index == nil
+
+    table =
+      table
+      |> State.move_dealer_to_seat(8)
+
+    assert table.dealer_seat_index == 8
+
+    table =
+      table
+      |> State.move_dealer_to_left()
+
+    assert table.dealer_seat_index == 9
+
+    table =
+      table
+      |> State.move_dealer_to_left()
+
+    assert table.dealer_seat_index == 0
+  end
 end
