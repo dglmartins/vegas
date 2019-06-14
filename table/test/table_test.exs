@@ -41,7 +41,7 @@ defmodule TableTest do
 
     {:ok, _pid} = Table.new(table_id)
 
-    card = Table.deal_card(table_id)
+    _card = Table.deal_card(table_id)
 
     assert TableServer.count_deck(table_id) == 51
 
@@ -57,8 +57,8 @@ defmodule TableTest do
     {:ok, _pid} = Table.new(table_id_one)
     {:ok, _pid} = Table.new(table_id_two)
 
-    card_deck_one = Table.deal_card(table_id_one)
-    card_deck_two = Table.deal_card(table_id_two)
+    _card_deck_one = Table.deal_card(table_id_one)
+    _card_deck_two = Table.deal_card(table_id_two)
 
     assert TableServer.count_deck(table_id_one) == 51
     assert TableServer.count_deck(table_id_two) == 51

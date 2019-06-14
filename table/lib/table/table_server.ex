@@ -36,12 +36,12 @@ defmodule Table.TableServer do
     GenServer.call(via_tuple(table_id), :count_deck)
   end
 
-  def get_dealer_seat_index(table_id) do
-    GenServer.call(via_tuple(table_id), :get_dealer_seat_index)
+  def get_dealer_seat(table_id) do
+    GenServer.call(via_tuple(table_id), :get_dealer_seat)
   end
 
-  def move_dealer_to_seat({table_id, new_seat_index}) do
-    GenServer.call(via_tuple(table_id), {:move_dealer_to_seat, new_seat_index})
+  def move_dealer_to_seat({table_id, new_seat}) do
+    GenServer.call(via_tuple(table_id), {:move_dealer_to_seat, new_seat})
   end
 
   def move_dealer_to_left(table_id) do
@@ -105,20 +105,20 @@ defmodule Table.TableServer do
     {:reply, :ok, table_state, @timeout}
   end
 
-  def handle_call(:get_dealer_seat_index, _from, table_state) do
-    {:reply, table_state.dealer_seat_index, table_state, @timeout}
+  def handle_call(:get_dealer_seat, _from, table_state) do
+    {:reply, table_state.dealer_seat, table_state, @timeout}
   end
 
-  def handle_call({:move_dealer_to_seat, new_seat_index}, _from, table_state) do
-    table_state = State.move_dealer_to_seat(table_state, new_seat_index)
+  def handle_call({:move_dealer_to_seat, new_seat}, _from, table_state) do
+    table_state = State.move_dealer_to_seat(table_state, new_seat)
     :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, {:ok, new_seat_index}, table_state, @timeout}
+    {:reply, {:ok, new_seat}, table_state, @timeout}
   end
 
   def handle_call(:move_dealer_to_left, _from, table_state) do
     table_state = State.move_dealer_to_left(table_state)
     :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, {:ok, table_state.dealer_seat_index}, table_state, @timeout}
+    {:reply, {:ok, table_state.dealer_seat}, table_state, @timeout}
   end
 
   def handle_info(:timeout, table_state) do

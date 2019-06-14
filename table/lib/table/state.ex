@@ -1,8 +1,8 @@
 defmodule Table.State do
-  alias Table.{SeatList, Deck}
+  alias Table.{SeatMap, Deck}
 
-  defstruct seat_list: nil,
-            dealer_seat_index: nil,
+  defstruct seat_map: nil,
+            dealer_seat: nil,
             deck: nil,
             status: :waiting,
             hand_history: []
@@ -10,25 +10,40 @@ defmodule Table.State do
   # deck_pid: nil
 
   def new() do
-    %Table.State{seat_list: SeatList.new_empty_table(), deck: Deck.new()}
+    %Table.State{seat_map: SeatMap.new_empty_table(), deck: Deck.new()}
   end
 
-  def move_dealer_to_seat(%Table.State{} = state, new_seat_index)
-      when not is_integer(new_seat_index) or new_seat_index > 9 do
+  def move_dealer_to_seat(%Table.State{} = state, new_dealer_seat)
+      when not is_integer(new_dealer_seat) or new_dealer_seat > 10 do
     state
   end
 
-  def move_dealer_to_seat(%Table.State{} = state, new_seat_index) do
-    %{state | dealer_seat_index: new_seat_index}
+  def move_dealer_to_seat(%Table.State{} = state, new_dealer_seat) do
+    %{state | dealer_seat: new_dealer_seat}
   end
 
-  def move_dealer_to_left(%Table.State{dealer_seat_index: nil} = state), do: state
+  def move_dealer_to_left(%Table.State{dealer_seat: nil} = state), do: state
 
-  def move_dealer_to_left(%Table.State{dealer_seat_index: 9} = state) do
-    %{state | dealer_seat_index: 0}
+  def move_dealer_to_left(%Table.State{dealer_seat: 10} = state) do
+    %{state | dealer_seat: 1}
   end
 
-  def move_dealer_to_left(%Table.State{dealer_seat_index: dealer_seat_index} = state) do
-    %{state | dealer_seat_index: dealer_seat_index + 1}
+  def move_dealer_to_left(%Table.State{dealer_seat: new_dealer_seat} = state) do
+    %{state | dealer_seat: new_dealer_seat + 1}
+  end
+
+  def join_table(%{seat_map: seat_map} = table, player, desired_seat)
+      when desired_seat in 1..10 do
+    empty_seat? = seat_map[desired_seat] == :empty_seat
+    join_table(table, player, desired_seat, empty_seat?)
+  end
+
+  def join_table(%{seat_map: seat_map} = table, player, desired_seat, true = _empty_seat?) do
+    {:ok, %{table | seat_map: Map.put(seat_map, desired_seat, player)}}
+  end
+
+  def join_table(table, _player, _desired_seat, _false = _empty_seat?) do
+    IO.puts("seat taken")
+    {:seat_taken, table}
   end
 end

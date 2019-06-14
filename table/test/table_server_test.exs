@@ -2,7 +2,7 @@ defmodule TableServerTest do
   use ExUnit.Case
   doctest Table.TableServer
 
-  alias Table.{TableServer, Deck, State}
+  alias Table.{TableServer, State}
 
   test "spawning a deck server process" do
     table_id = generate_table_id()
@@ -35,7 +35,7 @@ defmodule TableServerTest do
 
     {:ok, _pid} = TableServer.start_link(table_id)
 
-    card = TableServer.deal_card(table_id)
+    _card = TableServer.deal_card(table_id)
 
     assert TableServer.count_deck(table_id) == 51
 
@@ -65,24 +65,24 @@ defmodule TableServerTest do
 
     {:ok, _pid} = TableServer.start_link(table_id)
 
-    dealer_seat_index = TableServer.get_dealer_seat_index(table_id)
+    dealer_seat = TableServer.get_dealer_seat(table_id)
 
-    assert dealer_seat_index == nil
+    assert dealer_seat == nil
 
-    {:ok, new_seat_index} = TableServer.move_dealer_to_seat({table_id, 8})
+    {:ok, new_seat} = TableServer.move_dealer_to_seat({table_id, 9})
 
-    assert new_seat_index == 8
-    assert new_seat_index == TableServer.get_dealer_seat_index(table_id)
+    assert new_seat == 9
+    assert new_seat == TableServer.get_dealer_seat(table_id)
 
-    {:ok, new_seat_index} = TableServer.move_dealer_to_left(table_id)
+    {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
 
-    assert new_seat_index == 9
-    assert new_seat_index == TableServer.get_dealer_seat_index(table_id)
+    assert new_seat == 10
+    assert new_seat == TableServer.get_dealer_seat(table_id)
 
-    {:ok, new_seat_index} = TableServer.move_dealer_to_left(table_id)
+    {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
 
-    assert new_seat_index == 0
-    assert new_seat_index == TableServer.get_dealer_seat_index(table_id)
+    assert new_seat == 1
+    assert new_seat == TableServer.get_dealer_seat(table_id)
   end
 
   describe "ets" do
@@ -118,7 +118,7 @@ defmodule TableServerTest do
 
       {:ok, _pid} = TableServer.start_link(table_id)
 
-      card = TableServer.deal_card(table_id)
+      _card = TableServer.deal_card(table_id)
 
       [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
@@ -130,7 +130,7 @@ defmodule TableServerTest do
 
       {:ok, _pid} = TableServer.start_link(table_id)
 
-      card = TableServer.deal_card(table_id)
+      _card = TableServer.deal_card(table_id)
 
       [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
@@ -148,16 +148,16 @@ defmodule TableServerTest do
 
       {:ok, _pid} = TableServer.start_link(table_id)
 
-      {:ok, dealer_seat_index} = TableServer.move_dealer_to_seat({table_id, 3})
+      {:ok, _dealer_seat} = TableServer.move_dealer_to_seat({table_id, 3})
 
       [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
-      assert ets_table.dealer_seat_index == 3
+      assert ets_table.dealer_seat == 3
 
-      {:ok, dealer_seat_index} = TableServer.move_dealer_to_left(table_id)
+      {:ok, _dealer_seat} = TableServer.move_dealer_to_left(table_id)
       [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
-      assert ets_table.dealer_seat_index == 4
+      assert ets_table.dealer_seat == 4
     end
   end
 
