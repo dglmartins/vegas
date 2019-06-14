@@ -14,7 +14,7 @@ defmodule Deck.DeckServer do
   # Client (Public) Interface
 
   @doc """
-  Spawns a new game server process registered under the given `hand_number`.
+  Spawns a new deck server process registered under the given `deck_id`.
   """
   def start_link(deck_id) do
     GenServer.start_link(
@@ -45,7 +45,7 @@ defmodule Deck.DeckServer do
 
   @doc """
   Returns the `pid` of the game server process registered under the
-  given `game_name`, or `nil` if no process is registered.
+  given `deck_id`, or `nil` if no process is registered.
   """
   def deck_pid(deck_id) do
     deck_id
