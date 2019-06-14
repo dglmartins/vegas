@@ -192,6 +192,27 @@ defmodule TableServerTest do
 
       assert ets_table.dealer_seat == 4
     end
+
+    test "updates table state in ETS when players join and leave" do
+      table_id = generate_table_id()
+
+      player = Player.new("Danilo", 200)
+      player_two = Player.new("Paula", 200)
+
+      {:ok, _pid} = TableServer.start_link(table_id)
+
+      _status = TableServer.join_table({table_id, player, 2})
+
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert ets_table.seat_map[2] == player
+
+      :ok = TableServer.leave_table({table_id, 2})
+
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert ets_table.seat_map[2] == :empty_seat
+    end
   end
 
   describe "table_pid" do
