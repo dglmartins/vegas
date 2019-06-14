@@ -37,14 +37,14 @@ defmodule Deck.DeckServer do
   end
 
   @doc """
-  Returns a tuple used to register and lookup a game server process by name.
+  Returns a tuple used to register and lookup a deck server process by id.
   """
   def via_tuple(deck_id) do
     {:via, Registry, {Deck.DeckRegistry, deck_id}}
   end
 
   @doc """
-  Returns the `pid` of the game server process registered under the
+  Returns the `pid` of the deck server process registered under the
   given `deck_id`, or `nil` if no process is registered.
   """
   def deck_pid(deck_id) do
