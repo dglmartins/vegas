@@ -7,16 +7,18 @@ defmodule Table.State do
             status: :waiting,
             hand_history: [],
             min_bet: nil,
-            ante: nil
+            ante: nil,
+            game_type: nil
 
   # deck_pid: nil
 
-  def new(min_bet, ante) do
+  def new(min_bet, ante, game_type) do
     %Table.State{
       seat_map: SeatMap.new_empty_table(),
       deck: Deck.new(),
       ante: ante,
-      min_bet: min_bet
+      min_bet: min_bet,
+      game_type: game_type
     }
   end
 

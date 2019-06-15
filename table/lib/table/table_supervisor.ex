@@ -18,10 +18,10 @@ defmodule Table.TableSupervisor do
   @doc """
   Starts a `TableServer` process and supervises it.
   """
-  def new(table_id, min_bet, ante) do
+  def new(table_id, min_bet, ante, game_type) do
     child_spec = %{
       id: TableServer,
-      start: {TableServer, :start_link, [table_id, min_bet, ante]},
+      start: {TableServer, :start_link, [table_id, min_bet, ante, game_type]},
       restart: :transient
     }
 

@@ -16,10 +16,10 @@ defmodule Table.TableServer do
   @doc """
   Spawns a new table server process registered under the given `table_id`, small_blind, ante.
   """
-  def start_link(table_id, min_bet, ante) do
+  def start_link(table_id, min_bet, ante, game_type) do
     GenServer.start_link(
       __MODULE__,
-      {table_id, min_bet, ante},
+      {table_id, min_bet, ante, game_type},
       name: via_tuple(table_id)
     )
   end
@@ -79,11 +79,11 @@ defmodule Table.TableServer do
 
   # Server Callbacks
 
-  def init({table_id, min_bet, ante}) do
+  def init({table_id, min_bet, ante, game_type}) do
     table =
       case :ets.lookup(:tables_table, table_id) do
         [] ->
-          table = State.new(min_bet, ante)
+          table = State.new(min_bet, ante, game_type)
           :ets.insert(:tables_table, {table_id, table})
           table
 

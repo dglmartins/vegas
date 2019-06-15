@@ -6,18 +6,19 @@ defmodule TableTest do
 
   @min_bet 10
   @ante 0
+  @game_type :nl_holdem
 
   test "new spawns a table server process and is unique if created again" do
     table_id = generate_table_id()
 
-    assert {:ok, _pid} = Table.new(table_id, @min_bet, @ante)
-    assert {:error, {:already_started, _pid}} = Table.new(table_id, @min_bet, @ante)
+    assert {:ok, _pid} = Table.new(table_id, @min_bet, @ante, @game_type)
+    assert {:error, {:already_started, _pid}} = Table.new(table_id, @min_bet, @ante, @game_type)
   end
 
   test "deal_card deals a card" do
     table_id = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id, @min_bet, @ante)
+    {:ok, _pid} = Table.new(table_id, @min_bet, @ante, @game_type)
 
     card = Table.deal_card(table_id)
 
@@ -30,7 +31,7 @@ defmodule TableTest do
     test "returns a PID if it has been registered" do
       table_id = generate_table_id()
 
-      {:ok, pid} = Table.new(table_id, @min_bet, @ante)
+      {:ok, pid} = Table.new(table_id, @min_bet, @ante, @game_type)
       assert ^pid = Table.table_pid(table_id)
     end
 
@@ -42,7 +43,7 @@ defmodule TableTest do
   test "reshuffles a deck" do
     table_id = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id, @min_bet, @ante)
+    {:ok, _pid} = Table.new(table_id, @min_bet, @ante, @game_type)
 
     _card = Table.deal_card(table_id)
 
@@ -57,8 +58,8 @@ defmodule TableTest do
     table_id_one = generate_table_id()
     table_id_two = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id_one, @min_bet, @ante)
-    {:ok, _pid} = Table.new(table_id_two, @min_bet, @ante)
+    {:ok, _pid} = Table.new(table_id_one, @min_bet, @ante, @game_type)
+    {:ok, _pid} = Table.new(table_id_two, @min_bet, @ante, @game_type)
 
     _card_deck_one = Table.deal_card(table_id_one)
     _card_deck_two = Table.deal_card(table_id_two)
@@ -74,8 +75,8 @@ defmodule TableTest do
     table_id_one = generate_table_id()
     table_id_two = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id_one, @min_bet, @ante)
-    {:ok, _pid} = Table.new(table_id_two, @min_bet, @ante)
+    {:ok, _pid} = Table.new(table_id_one, @min_bet, @ante, @game_type)
+    {:ok, _pid} = Table.new(table_id_two, @min_bet, @ante, @game_type)
 
     :ok = Table.stop_table(table_id_one)
 
