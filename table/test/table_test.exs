@@ -4,17 +4,20 @@ defmodule TableTest do
 
   alias Table.TableServer
 
+  @min_bet 10
+  @ante 0
+
   test "new spawns a table server process and is unique if created again" do
     table_id = generate_table_id()
 
-    assert {:ok, _pid} = Table.new(table_id)
-    assert {:error, {:already_started, _pid}} = Table.new(table_id)
+    assert {:ok, _pid} = Table.new(table_id, @min_bet, @ante)
+    assert {:error, {:already_started, _pid}} = Table.new(table_id, @min_bet, @ante)
   end
 
   test "deal_card deals a card" do
     table_id = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id)
+    {:ok, _pid} = Table.new(table_id, @min_bet, @ante)
 
     card = Table.deal_card(table_id)
 
@@ -27,7 +30,7 @@ defmodule TableTest do
     test "returns a PID if it has been registered" do
       table_id = generate_table_id()
 
-      {:ok, pid} = Table.new(table_id)
+      {:ok, pid} = Table.new(table_id, @min_bet, @ante)
       assert ^pid = Table.table_pid(table_id)
     end
 
@@ -39,7 +42,7 @@ defmodule TableTest do
   test "reshuffles a deck" do
     table_id = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id)
+    {:ok, _pid} = Table.new(table_id, @min_bet, @ante)
 
     _card = Table.deal_card(table_id)
 
@@ -54,8 +57,8 @@ defmodule TableTest do
     table_id_one = generate_table_id()
     table_id_two = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id_one)
-    {:ok, _pid} = Table.new(table_id_two)
+    {:ok, _pid} = Table.new(table_id_one, @min_bet, @ante)
+    {:ok, _pid} = Table.new(table_id_two, @min_bet, @ante)
 
     _card_deck_one = Table.deal_card(table_id_one)
     _card_deck_two = Table.deal_card(table_id_two)
@@ -71,8 +74,8 @@ defmodule TableTest do
     table_id_one = generate_table_id()
     table_id_two = generate_table_id()
 
-    {:ok, _pid} = Table.new(table_id_one)
-    {:ok, _pid} = Table.new(table_id_two)
+    {:ok, _pid} = Table.new(table_id_one, @min_bet, @ante)
+    {:ok, _pid} = Table.new(table_id_two, @min_bet, @ante)
 
     :ok = Table.stop_table(table_id_one)
 

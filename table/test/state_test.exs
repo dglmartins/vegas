@@ -4,10 +4,15 @@ defmodule StateTest do
 
   alias Table.{State, Player}
 
+  @min_bet 10
+  @ante 0
+
   test "creates a table given a table id" do
-    table = State.new()
+    table = State.new(@min_bet, @ante)
 
     assert table.status == :waiting
+    assert table.min_bet == 10
+    assert table.ante == 0
     assert Enum.count(table.deck) == 52
     assert Enum.count(table.seat_map) == 10
 
@@ -17,7 +22,7 @@ defmodule StateTest do
   end
 
   test "moves dealer seat, does not move if not integer or if index > 10" do
-    table = State.new()
+    table = State.new(@min_bet, @ante)
     assert table.dealer_seat == nil
 
     table =
@@ -40,7 +45,7 @@ defmodule StateTest do
   end
 
   test "moves dealer seat to left, moves to one if current index is 10" do
-    table = State.new()
+    table = State.new(@min_bet, @ante)
 
     table =
       table
@@ -68,7 +73,7 @@ defmodule StateTest do
   end
 
   test "player joins cannot join taken seat" do
-    table = State.new()
+    table = State.new(@min_bet, @ante)
     player = Player.new("Danilo", 200)
 
     {status, table} = State.join_table(table, player, 2)
@@ -84,7 +89,7 @@ defmodule StateTest do
   end
 
   test "player leaves" do
-    table = State.new()
+    table = State.new(@min_bet, @ante)
     player = Player.new("Danilo", 200)
 
     {status, table} = State.join_table(table, player, 2)

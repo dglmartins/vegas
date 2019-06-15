@@ -5,16 +5,23 @@ defmodule Table.State do
             dealer_seat: nil,
             deck: nil,
             status: :waiting,
-            hand_history: []
+            hand_history: [],
+            min_bet: nil,
+            ante: nil
 
   # deck_pid: nil
 
-  def new() do
-    %Table.State{seat_map: SeatMap.new_empty_table(), deck: Deck.new()}
+  def new(min_bet, ante) do
+    %Table.State{
+      seat_map: SeatMap.new_empty_table(),
+      deck: Deck.new(),
+      ante: ante,
+      min_bet: min_bet
+    }
   end
 
   def move_dealer_to_seat(%Table.State{} = state, new_dealer_seat)
-      when not is_integer(new_dealer_seat) or new_dealer_seat > 10 do
+      when not is_integer(new_dealer_seat) or new_dealer_seat > 10 or new_dealer_seat < 1 do
     state
   end
 
