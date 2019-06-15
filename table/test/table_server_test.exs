@@ -90,6 +90,19 @@ defmodule TableServerTest do
     assert new_seat == TableServer.get_dealer_seat(table_id)
   end
 
+  test "gets game type, gets min bet, gets ante" do
+    table_id = generate_table_id()
+
+    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
+
+    game_type = TableServer.get_game_type(table_id)
+    {min_bet, ante} = TableServer.get_min_bet_ante(table_id)
+
+    assert game_type == @game_type
+    assert min_bet == @min_bet
+    assert ante == @ante
+  end
+
   test "joins and leaves table, gets seat map" do
     table_id = generate_table_id()
 
