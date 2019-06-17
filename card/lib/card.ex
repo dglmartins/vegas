@@ -1,18 +1,7 @@
 defmodule Card do
-  @moduledoc """
-  Documentation for Card.
-  """
+  defstruct rank: nil, suit: nil, show: false
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Card.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def new(rank, suit) do
+    %Card{rank: rank, suit: suit}
   end
 end

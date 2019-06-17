@@ -33,6 +33,7 @@ defmodule TableServerTest do
     assert card.rank in 2..14
     assert card.suit in [:hearts, :clubs, :diamonds, :spades]
     assert TableServer.count_deck(table_id) == 51
+    assert %Card{} = card
   end
 
   test "reshuffles a deck" do
