@@ -2,7 +2,7 @@ defmodule StateTest do
   use ExUnit.Case
   doctest Table.State
 
-  alias Table.{State, Player}
+  alias Table.{State}
 
   @min_bet 10
   @ante 0

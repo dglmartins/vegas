@@ -1,18 +1,7 @@
 defmodule Player do
-  @moduledoc """
-  Documentation for Player.
-  """
+  defstruct name: nil, chip_count: nil, status: :active
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Player.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def new(name, chip_count) do
+    %Player{name: name, chip_count: chip_count, status: :active}
   end
 end

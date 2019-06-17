@@ -2,7 +2,7 @@ defmodule TableServerTest do
   use ExUnit.Case
   doctest Table.TableServer
 
-  alias Table.{TableServer, State, Player}
+  alias Table.{TableServer, State}
 
   @min_bet 10
   @ante 0
