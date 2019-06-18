@@ -28,6 +28,10 @@ defmodule NlHoldemHand.HandServer do
     GenServer.call(via_tuple(hand_id), {:deal_hole_card, card, seat})
   end
 
+  def get_dealer_seat(hand_id) do
+    GenServer.call(via_tuple(hand_id), :get_dealer_seat)
+  end
+
   @doc """
   Returns a tuple used to register and lookup a hand server process by id.
   """
@@ -66,6 +70,10 @@ defmodule NlHoldemHand.HandServer do
   def handle_call({:deal_hole_card, card, seat}, _from, hand_state) do
     hand_state = Play.deal_hole_card(hand_state, card, seat)
     {:reply, :ok, hand_state, @timeout}
+  end
+
+  def handle_call(:get_dealer_seat, _from, hand_state) do
+    {:reply, hand_state.dealer_seat, hand_state, @timeout}
   end
 
   def handle_info(:timeout, hand_state) do
