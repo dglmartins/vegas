@@ -18,7 +18,7 @@ defmodule NlHoldemHand.Hand do
     seat_map =
       seat_map
       |> filter_empty_seats()
-      |> put_cards_into_seat_map()
+      |> Enum.into(%{})
 
     %NlHoldemHand.Hand{seat_map: seat_map}
   end
@@ -26,12 +26,6 @@ defmodule NlHoldemHand.Hand do
   defp filter_empty_seats(seat_map) do
     Enum.filter(seat_map, fn {_seat, player} ->
       player != :empty_seat
-    end)
-  end
-
-  defp put_cards_into_seat_map(seat_map) do
-    Enum.reduce(seat_map, %{}, fn {seat, player}, acc ->
-      Map.put(acc, seat, Map.put(player, :cards, []))
     end)
   end
 end

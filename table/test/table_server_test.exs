@@ -216,7 +216,6 @@ defmodule TableServerTest do
       table_id = generate_table_id()
 
       player = Player.new("Danilo", 200)
-      player_two = Player.new("Paula", 200)
 
       {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 

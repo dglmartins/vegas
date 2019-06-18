@@ -105,7 +105,7 @@ defmodule Table.TableServer do
   end
 
   def handle_call(:deal_card, _from, %State{deck: []} = table_state) do
-    {:reply, %Deck.Card{}, table_state, @timeout}
+    {:reply, %Card{}, table_state, @timeout}
   end
 
   def handle_call(:deal_card, _from, %State{deck: [card_dealt | rest_of_deck]} = table_state) do
@@ -119,7 +119,7 @@ defmodule Table.TableServer do
   end
 
   def handle_call(:reshuffle, _from, table_state) do
-    deck = Table.Deck.new()
+    deck = Deck.new()
     table_state = %{table_state | deck: deck}
     :ets.insert(:tables_table, {my_table_id(), table_state})
     {:reply, :ok, table_state, @timeout}

@@ -1,5 +1,5 @@
 defmodule Player do
-  defstruct name: nil, chip_count: nil, status: :active
+  defstruct name: nil, chip_count: nil, status: :active, cards: []
 
   @accepted_status [:active, :sitting_out, :disconnected]
 
