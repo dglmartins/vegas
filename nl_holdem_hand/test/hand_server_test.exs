@@ -28,7 +28,7 @@ defmodule HandServerTest do
              HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
   end
 
-  test "a table process is registered under a unique hand_id and cannot be restarted" do
+  test "a hand process is registered under a unique hand_id and cannot be restarted" do
     hand_id = generate_hand_id()
 
     assert {:ok, _pid} =
