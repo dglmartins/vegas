@@ -13,7 +13,9 @@ defmodule NlHoldemHand.State do
             table_id: nil,
             hand_id: nil,
             current_bet_round: :pre_flop,
-            dealer_seat: nil
+            dealer_seat: nil,
+            sb_seat: nil,
+            bb_seat: nil
 
   def new(hand_id, table_id, min_bet, ante, seat_map, dealer_seat) do
     seat_map =
@@ -28,11 +30,38 @@ defmodule NlHoldemHand.State do
       sb: min_bet / 2,
       ante: ante,
       seat_map: seat_map,
-      dealer_seat: dealer_seat
+      dealer_seat: dealer_seat,
+      min_raise: min_bet,
+      seat_with_action: get_next_taken_seat(dealer_seat, seat_map),
+      sb_seat: get_next_taken_seat(dealer_seat, seat_map),
+      bb_seat: get_bb_seat(dealer_seat, seat_map),
+      last_to_act: get_bb_seat(dealer_seat, seat_map)
     }
   end
 
-  defp filter_empty_seats(seat_map) do
+  def get_next_taken_seat(seat_number, seat_map) when seat_number <= 10 do
+    get_next_taken_seat(seat_number + 1, seat_map, Map.has_key?(seat_map, seat_number + 1))
+  end
+
+  def get_next_taken_seat(seat_number, seat_map, _seat_taken?) when seat_number == 11 do
+    get_next_taken_seat(1, seat_map, Map.has_key?(seat_map, 1))
+  end
+
+  def get_next_taken_seat(seat_number, seat_map, false = _seat_taken?) do
+    get_next_taken_seat(seat_number + 1, seat_map, Map.has_key?(seat_map, seat_number + 1))
+  end
+
+  def get_next_taken_seat(seat_number, _seat_map, true = _seat_taken?) do
+    seat_number
+  end
+
+  def get_bb_seat(dealer_seat, seat_map) do
+    dealer_seat
+    |> get_next_taken_seat(seat_map)
+    |> get_next_taken_seat(seat_map)
+  end
+
+  def filter_empty_seats(seat_map) do
     Enum.filter(seat_map, fn {_seat, player} ->
       player != :empty_seat
     end)
