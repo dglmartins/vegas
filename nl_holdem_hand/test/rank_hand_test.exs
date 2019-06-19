@@ -34,7 +34,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 1
     assert tie_breakers == [12, 10, 9, 7, 6]
@@ -52,7 +52,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 1
     assert tie_breakers == [13, 12, 10, 9, 7]
@@ -70,7 +70,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 1
     assert tie_breakers == [14, 13, 12, 10, 9]
@@ -88,7 +88,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 2
     assert tie_breakers == [9, 13, 12, 10]
@@ -106,7 +106,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 2
     assert tie_breakers == [9, 14, 13, 12]
@@ -124,7 +124,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 2
     assert tie_breakers == [9, 14, 12, 8]
@@ -142,7 +142,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 2
     assert tie_breakers == [9, 12, 8, 7]
@@ -160,7 +160,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 2
     assert tie_breakers == [9, 14, 12, 8]
@@ -178,7 +178,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 3
     assert tie_breakers == [9, 5, 12]
@@ -196,7 +196,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 3
     assert tie_breakers == [9, 5, 14]
@@ -214,7 +214,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 3
     assert tie_breakers == [9, 5, 12]
@@ -232,7 +232,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 3
     assert tie_breakers == [9, 5, 14]
@@ -250,7 +250,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 3
     assert tie_breakers == [9, 6, 12]
@@ -268,7 +268,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 4
     assert tie_breakers == [5, 14, 12]
@@ -286,7 +286,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 4
     assert tie_breakers == [5, 14, 13]
@@ -304,7 +304,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 4
     assert tie_breakers == [5, 14, 13]
@@ -322,7 +322,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 4
     assert tie_breakers == [5, 12, 11]
@@ -340,7 +340,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 4
     assert tie_breakers == [5, 14, 12]
@@ -358,7 +358,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 4
     assert tie_breakers == [5, 14, 12]
@@ -376,7 +376,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 5
     assert tie_breakers == [9]
@@ -394,7 +394,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 5
     assert tie_breakers == [9]
@@ -412,7 +412,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 5
     assert tie_breakers == [9]
@@ -430,7 +430,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 6
     assert tie_breakers == [9, 8, 7, 3, 2]
@@ -448,7 +448,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 6
     assert tie_breakers == [10, 9, 8, 7, 3]
@@ -466,7 +466,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 6
     assert tie_breakers == [12, 10, 9, 8, 7]
@@ -484,7 +484,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 7
     assert tie_breakers == [2, 8]
@@ -502,7 +502,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 7
     assert tie_breakers == [2, 8]
@@ -520,7 +520,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 7
     assert tie_breakers == [2, 8]
@@ -538,7 +538,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 8
     assert tie_breakers == [4, 5]
@@ -556,7 +556,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 8
     assert tie_breakers == [4, 6]
@@ -574,7 +574,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 8
     assert tie_breakers == [4, 10]
@@ -592,7 +592,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 9
     assert tie_breakers == [9]
@@ -610,7 +610,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 9
     assert tie_breakers == [8]
@@ -628,7 +628,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 9
     assert tie_breakers == [8]
@@ -646,7 +646,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 10
     assert tie_breakers == []
@@ -664,7 +664,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 10
     assert tie_breakers == []
@@ -682,7 +682,7 @@ defmodule RankHandTest do
     ]
 
     %RankHand{main_rank: main_rank, tie_breakers: tie_breakers} =
-      IO.inspect(RankHand.get_rank_hole_board(hole_cards, board))
+      RankHand.get_rank_hole_board(hole_cards, board)
 
     assert main_rank == 10
     assert tie_breakers == []

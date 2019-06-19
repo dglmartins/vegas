@@ -23,6 +23,16 @@ defmodule DeckTest do
     assert DeckServer.count_deck(deck_id) == 51
   end
 
+  test "stops a deck" do
+    deck_id = generate_deck_id()
+
+    assert {:ok, _pid} = Deck.create_deck(deck_id)
+    assert {:error, {:already_started, _pid}} = Deck.create_deck(deck_id)
+
+    assert :ok = Deck.stop_deck(deck_id)
+    assert {:ok, _pid} = Deck.create_deck(deck_id)
+  end
+
   describe "deck_pid" do
     test "returns a PID if it has been registered" do
       deck_id = generate_deck_id()

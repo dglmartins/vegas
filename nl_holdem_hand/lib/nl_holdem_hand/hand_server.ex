@@ -24,8 +24,8 @@ defmodule NlHoldemHand.HandServer do
     )
   end
 
-  def deal_hole_card({hand_id, card, seat}) do
-    GenServer.call(via_tuple(hand_id), {:deal_hole_card, card, seat})
+  def deal_hole_cards(hand_id) do
+    GenServer.call(via_tuple(hand_id), :deal_hole_cards)
   end
 
   def get_dealer_seat(hand_id) do
@@ -63,12 +63,13 @@ defmodule NlHoldemHand.HandServer do
           hand
       end
 
+    Deck.create_deck(hand_id)
     Logger.info("Spawned hand server process named '#{hand_id}'.")
     {:ok, hand, @timeout}
   end
 
-  def handle_call({:deal_hole_card, card, seat}, _from, hand_state) do
-    hand_state = Play.deal_hole_card(hand_state, card, seat)
+  def handle_call(:deal_hole_cards, _from, hand_state) do
+    hand_state = Play.deal_hole_cards(hand_state)
     :ets.insert(:hands_table, {my_hand_id(), hand_state})
     {:reply, :ok, hand_state, @timeout}
   end

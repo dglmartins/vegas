@@ -30,7 +30,6 @@ defmodule StateTest do
              ante: ante,
              seat_map: seat_map,
              dealer_seat: dealer_seat,
-             table_id: table_id,
              sb_seat: sb_seat,
              bb_seat: bb_seat,
              last_to_act: last_to_act,

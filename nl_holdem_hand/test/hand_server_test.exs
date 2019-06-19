@@ -21,7 +21,7 @@ defmodule HandServerTest do
   @table_id "test_table"
   @dealer_seat 3
 
-  test "spawning a hand server process" do
+  test "spawning a hand server process and a deck is created with the same id as the hand" do
     hand_id = generate_hand_id()
 
     assert {:ok, _pid} =
@@ -33,6 +33,10 @@ defmodule HandServerTest do
                @seat_map_from_table,
                @dealer_seat
              )
+
+    _card = Deck.deal_card(hand_id)
+
+    assert Deck.DeckServer.count_deck(hand_id) == 51
   end
 
   test "a hand process is registered under a unique hand_id and cannot be restarted" do
@@ -48,6 +52,10 @@ defmodule HandServerTest do
                @dealer_seat
              )
 
+    assert Deck.DeckServer.count_deck(hand_id) == 52
+    _card = Deck.deal_card(hand_id)
+    assert Deck.DeckServer.count_deck(hand_id) == 51
+
     assert {:error, {:already_started, _pid}} =
              HandServer.start_link(
                hand_id,
@@ -57,25 +65,8 @@ defmodule HandServerTest do
                @seat_map_from_table,
                @dealer_seat
              )
-  end
 
-  test "hand server deals a hole card" do
-    hand_id = generate_hand_id()
-
-    {:ok, _pid} =
-      HandServer.start_link(
-        hand_id,
-        @table_id,
-        @min_bet,
-        @ante,
-        @seat_map_from_table,
-        @dealer_seat
-      )
-
-    card = Card.new(2, :spades)
-    seat = 3
-
-    assert :ok = HandServer.deal_hole_card({hand_id, card, seat})
+    assert Deck.DeckServer.count_deck(hand_id) == 51
   end
 
   describe "ets" do
@@ -151,7 +142,7 @@ defmodule HandServerTest do
       assert HandServer.get_dealer_seat(hand_id) == 7
     end
 
-    test "updates hand state in ETS when card is dealt" do
+    test "updates hand state in ETS when hole cards are dealt" do
       hand_id = generate_hand_id()
 
       {:ok, _pid} =
@@ -164,14 +155,14 @@ defmodule HandServerTest do
           @dealer_seat
         )
 
-      card = Card.new(2, :spades)
-      seat = 3
-
-      :ok = HandServer.deal_hole_card({hand_id, card, seat})
+      :ok = HandServer.deal_hole_cards(hand_id)
 
       [{^hand_id, ets_table}] = :ets.lookup(:hands_table, hand_id)
 
-      assert card in ets_table.seat_map[3].cards
+      assert Enum.count(ets_table.seat_map[1].cards) == 2
+      assert Enum.count(ets_table.seat_map[3].cards) == 2
+      assert Enum.count(ets_table.seat_map[7].cards) == 2
+      assert Deck.DeckServer.count_deck(hand_id) == 46
     end
   end
 

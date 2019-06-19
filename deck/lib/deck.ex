@@ -6,4 +6,5 @@ defmodule Deck do
   defdelegate deck_ids(), to: DeckSupervisor
   defdelegate deal_card(deck_id), to: DeckServer
   defdelegate reshuffle(deck_id), to: DeckServer
+  defdelegate stop_deck(deck_id), to: DeckSupervisor
 end
