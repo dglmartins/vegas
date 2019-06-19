@@ -6,7 +6,7 @@ defmodule HandServerTest do
 
   @min_bet 10
   @ante 0
-  @seat_map %{
+  @seat_map_from_table %{
     1 => %Player{cards: [], chip_count: 200, name: "Danilo", status: :active},
     2 => :empty_seat,
     3 => %Player{cards: [], chip_count: 200, name: "Paula", status: :active},
@@ -25,24 +25,52 @@ defmodule HandServerTest do
     hand_id = generate_hand_id()
 
     assert {:ok, _pid} =
-             HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+             HandServer.start_link(
+               hand_id,
+               @table_id,
+               @min_bet,
+               @ante,
+               @seat_map_from_table,
+               @dealer_seat
+             )
   end
 
   test "a hand process is registered under a unique hand_id and cannot be restarted" do
     hand_id = generate_hand_id()
 
     assert {:ok, _pid} =
-             HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+             HandServer.start_link(
+               hand_id,
+               @table_id,
+               @min_bet,
+               @ante,
+               @seat_map_from_table,
+               @dealer_seat
+             )
 
     assert {:error, {:already_started, _pid}} =
-             HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+             HandServer.start_link(
+               hand_id,
+               @table_id,
+               @min_bet,
+               @ante,
+               @seat_map_from_table,
+               @dealer_seat
+             )
   end
 
   test "hand server deals a hole card" do
     hand_id = generate_hand_id()
 
     {:ok, _pid} =
-      HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+      HandServer.start_link(
+        hand_id,
+        @table_id,
+        @min_bet,
+        @ante,
+        @seat_map_from_table,
+        @dealer_seat
+      )
 
     card = Card.new(2, :spades)
     seat = 3
@@ -55,7 +83,14 @@ defmodule HandServerTest do
       hand_id = generate_hand_id()
 
       {:ok, _pid} =
-        HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+        HandServer.start_link(
+          hand_id,
+          @table_id,
+          @min_bet,
+          @ante,
+          @seat_map_from_table,
+          @dealer_seat
+        )
 
       assert [
                {^hand_id,
@@ -82,7 +117,7 @@ defmodule HandServerTest do
     test "gets the hand initial state from ETS if previously stored, ignores new parameters" do
       hand_id = generate_hand_id()
 
-      state = State.new(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+      state = State.new(hand_id, @table_id, @min_bet, @ante, @seat_map_from_table, @dealer_seat)
 
       seat_map = state.seat_map
       new_dealer_seat = 7
@@ -104,7 +139,14 @@ defmodule HandServerTest do
       :ets.insert(:hands_table, {hand_id, new_state})
 
       {:ok, _pid} =
-        HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+        HandServer.start_link(
+          hand_id,
+          @table_id,
+          @min_bet,
+          @ante,
+          @seat_map_from_table,
+          @dealer_seat
+        )
 
       assert HandServer.get_dealer_seat(hand_id) == 7
     end
@@ -113,7 +155,14 @@ defmodule HandServerTest do
       hand_id = generate_hand_id()
 
       {:ok, _pid} =
-        HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+        HandServer.start_link(
+          hand_id,
+          @table_id,
+          @min_bet,
+          @ante,
+          @seat_map_from_table,
+          @dealer_seat
+        )
 
       card = Card.new(2, :spades)
       seat = 3
