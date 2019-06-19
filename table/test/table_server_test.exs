@@ -8,7 +8,7 @@ defmodule TableServerTest do
   @ante 0
   @game_type :nl_holdem
 
-  test "spawning a deck server process" do
+  test "spawning a table server process" do
     table_id = generate_table_id()
 
     assert {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
@@ -21,49 +21,6 @@ defmodule TableServerTest do
 
     assert {:error, {:already_started, _pid}} =
              TableServer.start_link(table_id, @min_bet, @ante, @game_type)
-  end
-
-  test "table server deals a card" do
-    table_id = generate_table_id()
-
-    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
-
-    card = TableServer.deal_card(table_id)
-
-    assert card.rank in 2..14
-    assert card.suit in [:hearts, :clubs, :diamonds, :spades]
-    assert TableServer.count_deck(table_id) == 51
-    assert %Card{} = card
-  end
-
-  test "reshuffles a deck" do
-    table_id = generate_table_id()
-
-    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
-
-    _card = TableServer.deal_card(table_id)
-
-    assert TableServer.count_deck(table_id) == 51
-
-    TableServer.reshuffle(table_id)
-
-    assert TableServer.count_deck(table_id) == 52
-  end
-
-  test "deck is empty after dealing 52 cards" do
-    table_id = generate_table_id()
-
-    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
-
-    for _deal <- 1..52 do
-      TableServer.deal_card(table_id)
-    end
-
-    card = TableServer.deal_card(table_id)
-
-    assert card.rank == nil
-    assert card.suit == nil
-    assert TableServer.count_deck(table_id) == 0
   end
 
   test "gets dealer seat, moves dealer seat, moves dealer to left" do
@@ -143,11 +100,7 @@ defmodule TableServerTest do
 
       {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 
-      assert [{^table_id, %State{deck: deck}}] = :ets.lookup(:tables_table, table_id)
-
-      [first_card | _rest_of_deck] = deck
-
-      assert first_card == TableServer.deal_card(table_id)
+      assert [{^table_id, %State{}}] = :ets.lookup(:tables_table, table_id)
     end
 
     test "gets the table initial state from ETS if previously stored" do
@@ -155,44 +108,12 @@ defmodule TableServerTest do
 
       state = State.new(@min_bet, @ante, @game_type)
 
-      [_dealt_card | rest_of_deck] = state.deck
-
-      new_state = %{state | deck: rest_of_deck}
+      new_state = %{state | game_type: :horse}
       :ets.insert(:tables_table, {table_id, new_state})
 
       {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 
-      assert TableServer.count_deck(table_id) == 51
-    end
-
-    test "updates table state in ETS when card is dealt" do
-      table_id = generate_table_id()
-
-      {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
-
-      _card = TableServer.deal_card(table_id)
-
-      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
-
-      assert Enum.count(ets_table.deck) == 51
-    end
-
-    test "updates table state in ETS when deck is shuffled" do
-      table_id = generate_table_id()
-
-      {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
-
-      _card = TableServer.deal_card(table_id)
-
-      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
-
-      assert Enum.count(ets_table.deck) == 51
-
-      TableServer.reshuffle(table_id)
-
-      [{^table_id, reshuffled_ets_table}] = :ets.lookup(:tables_table, table_id)
-
-      assert Enum.count(reshuffled_ets_table.deck) == 52
+      assert TableServer.get_game_type(table_id) == :horse
     end
 
     test "updates table state in ETS when dealer is moved to new seat or to the left" do

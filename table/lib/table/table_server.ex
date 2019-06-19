@@ -24,18 +24,6 @@ defmodule Table.TableServer do
     )
   end
 
-  def deal_card(table_id) do
-    GenServer.call(via_tuple(table_id), :deal_card)
-  end
-
-  def reshuffle(table_id) do
-    GenServer.call(via_tuple(table_id), :reshuffle)
-  end
-
-  def count_deck(table_id) do
-    GenServer.call(via_tuple(table_id), :count_deck)
-  end
-
   def get_dealer_seat(table_id) do
     GenServer.call(via_tuple(table_id), :get_dealer_seat)
   end
@@ -102,27 +90,6 @@ defmodule Table.TableServer do
     Logger.info("Spawned table server process named '#{table_id}'.")
 
     {:ok, table, @timeout}
-  end
-
-  def handle_call(:deal_card, _from, %State{deck: []} = table_state) do
-    {:reply, %Card{}, table_state, @timeout}
-  end
-
-  def handle_call(:deal_card, _from, %State{deck: [card_dealt | rest_of_deck]} = table_state) do
-    table_state = %{table_state | deck: rest_of_deck}
-    :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, card_dealt, table_state, @timeout}
-  end
-
-  def handle_call(:count_deck, _from, %State{deck: deck} = table_state) do
-    {:reply, Enum.count(deck), table_state, @timeout}
-  end
-
-  def handle_call(:reshuffle, _from, table_state) do
-    deck = Deck.new()
-    table_state = %{table_state | deck: deck}
-    :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, :ok, table_state, @timeout}
   end
 
   def handle_call(:get_dealer_seat, _from, table_state) do

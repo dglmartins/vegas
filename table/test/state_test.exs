@@ -15,7 +15,6 @@ defmodule StateTest do
     assert table.min_bet == 10
     assert table.game_type == :nl_holdem
     assert table.ante == 0
-    assert Enum.count(table.deck) == 52
     assert Enum.count(table.seat_map) == 10
 
     for seat <- 1..10 do
