@@ -69,6 +69,7 @@ defmodule NlHoldemHand.HandServer do
 
   def handle_call({:deal_hole_card, card, seat}, _from, hand_state) do
     hand_state = Play.deal_hole_card(hand_state, card, seat)
+    :ets.insert(:hands_table, {my_hand_id(), hand_state})
     {:reply, :ok, hand_state, @timeout}
   end
 

@@ -106,6 +106,22 @@ defmodule HandServerTest do
 
       assert HandServer.get_dealer_seat(hand_id) == 7
     end
+
+    test "updates hand state in ETS when card is dealt" do
+      hand_id = generate_hand_id()
+
+      {:ok, _pid} =
+        HandServer.start_link(hand_id, @table_id, @min_bet, @ante, @seat_map, @dealer_seat)
+
+      card = Card.new(2, :spades)
+      seat = 3
+
+      :ok = HandServer.deal_hole_card({hand_id, card, seat})
+
+      [{^hand_id, ets_table}] = :ets.lookup(:hands_table, hand_id)
+
+      assert card in ets_table.seat_map[3].cards
+    end
   end
 
   defp generate_hand_id() do
