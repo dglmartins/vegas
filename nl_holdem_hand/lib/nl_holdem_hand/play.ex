@@ -60,6 +60,29 @@ defmodule NlHoldemHand.Play do
   # def post_blinds(%{sb_seat: sb_seat, bb_seat: bb_seat, sb: sb, bb: bb} = hand_state) do
   # end
   #
+  # def deal_flop(hand_state) do
+  # end
+  # def deal_turn(hand_state) do
+  # end
+  #
+  # def deal_river(hand_state) do
+  # end
+  # def pre_flop_action(hand_state) do
+  #
+  # end
+  #
+  # def post_flop_action(hand_state) do
+  #
+  # end
+  #
+  # def turn_action(hand_state) do
+  #
+  # end
+  #
+  # def river_action(hand_state) do
+  #
+  # end
+  #
   # def put_chips_in_pot(%State{seat_map: seat_map, pots: pots} = hand_state) do
   # end
 end

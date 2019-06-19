@@ -52,20 +52,21 @@ defmodule NlHoldemHand.HandServer do
   # Server Callbacks
 
   def init({hand_id, table_id, min_bet, ante, seat_map, dealer_seat}) do
-    hand =
+    hand_state =
       case :ets.lookup(:hands_table, hand_id) do
         [] ->
-          hand = State.new(hand_id, table_id, min_bet, ante, seat_map, dealer_seat)
-          :ets.insert(:hands_table, {hand_id, hand})
-          hand
+          Deck.create_deck(hand_id)
 
-        [{^hand_id, hand}] ->
-          hand
+          hand_state = State.new(hand_id, table_id, min_bet, ante, seat_map, dealer_seat)
+          :ets.insert(:hands_table, {hand_id, hand_state})
+          hand_state
+
+        [{^hand_id, hand_state}] ->
+          hand_state
       end
 
-    Deck.create_deck(hand_id)
     Logger.info("Spawned hand server process named '#{hand_id}'.")
-    {:ok, hand, @timeout}
+    {:ok, hand_state, @timeout}
   end
 
   def handle_call(:deal_hole_cards, _from, hand_state) do
