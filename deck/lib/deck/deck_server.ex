@@ -28,10 +28,6 @@ defmodule Deck.DeckServer do
     GenServer.call(via_tuple(deck_id), :deal_card)
   end
 
-  def reshuffle(deck_id) do
-    GenServer.call(via_tuple(deck_id), :reshuffle)
-  end
-
   def count_deck(deck_id) do
     GenServer.call(via_tuple(deck_id), :count_deck)
   end
@@ -83,12 +79,6 @@ defmodule Deck.DeckServer do
 
   def handle_call(:count_deck, _from, deck) do
     {:reply, Enum.count(deck), deck, @timeout}
-  end
-
-  def handle_call(:reshuffle, _from, _deck) do
-    deck = Create.new()
-    :ets.insert(:decks_table, {my_deck_id(), deck})
-    {:reply, :ok, deck, @timeout}
   end
 
   def handle_info(:timeout, deck) do

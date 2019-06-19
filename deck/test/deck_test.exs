@@ -36,20 +36,6 @@ defmodule DeckTest do
     end
   end
 
-  test "reshuffles a deck" do
-    deck_id = generate_deck_id()
-
-    {:ok, _pid} = Deck.create_deck(deck_id)
-
-    card = Deck.deal_card(deck_id)
-
-    assert DeckServer.count_deck(deck_id) == 51
-
-    Deck.reshuffle(deck_id)
-
-    assert DeckServer.count_deck(deck_id) == 52
-  end
-
   test "gets deck_ids" do
     deck_id_one = generate_deck_id()
     deck_id_two = generate_deck_id()

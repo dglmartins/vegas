@@ -30,20 +30,6 @@ defmodule DeckServerTest do
     assert DeckServer.count_deck(deck_id) == 51
   end
 
-  test "reshuffles a deck" do
-    deck_id = generate_deck_id()
-
-    {:ok, _pid} = DeckServer.start_link(deck_id)
-
-    card = DeckServer.deal_card(deck_id)
-
-    assert DeckServer.count_deck(deck_id) == 51
-
-    DeckServer.reshuffle(deck_id)
-
-    assert DeckServer.count_deck(deck_id) == 52
-  end
-
   test "deck is empty after 52 cards" do
     deck_id = generate_deck_id()
 
@@ -95,24 +81,6 @@ defmodule DeckServerTest do
     [{^deck_id, ets_deck}] = :ets.lookup(:decks_table, deck_id)
 
     assert Enum.count(ets_deck) == 51
-  end
-
-  test "updates state in ETS when deck is shuffled" do
-    deck_id = generate_deck_id()
-
-    {:ok, _pid} = DeckServer.start_link(deck_id)
-
-    card = DeckServer.deal_card(deck_id)
-
-    [{^deck_id, ets_deck}] = :ets.lookup(:decks_table, deck_id)
-
-    assert Enum.count(ets_deck) == 51
-
-    DeckServer.reshuffle(deck_id)
-
-    [{^deck_id, reshuffled_ets_deck}] = :ets.lookup(:decks_table, deck_id)
-
-    assert Enum.count(reshuffled_ets_deck) == 52
   end
 
   describe "deck_pid" do
