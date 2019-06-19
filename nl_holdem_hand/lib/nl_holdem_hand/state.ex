@@ -74,4 +74,17 @@ defmodule NlHoldemHand.State do
       player != :empty_seat
     end)
   end
+
+  def leave_hand(hand_state, seat) do
+    leave_hand(hand_state, seat, Map.has_key?(hand_state.seat_map, seat))
+  end
+
+  defp leave_hand(%NlHoldemHand.State{seat_map: seat_map} = state, seat, true = _seat_taken?) do
+    player = %{seat_map[seat] | status: :away}
+    %{state | seat_map: Map.put(seat_map, seat, player)}
+  end
+
+  defp leave_hand(state, _seat, false = _seat_taken?) do
+    state
+  end
 end

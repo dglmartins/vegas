@@ -6,9 +6,19 @@ defmodule NlHoldemHand.Play do
     hand_state
   end
 
-  def deal_hole_cards_rule() do
-    [show: false, show: false]
-  end
+  # def deal_action_rules_map() do
+  #   %{
+  #     deal_hole_cards: [show: false, show: false],
+  #     post_pre_action_bets: [all: :antes, sb: :half_min_bet, bb: :min_bet],
+  #     action_on: :under_the_gun,
+  #     deal_community: [:flop_cards, :flop_cards, :flop_cards],
+  #     action_on: :first_left_of_dealer,
+  #     deal_community: [:turn_card],
+  #     action_on: :first_left_of_dealer,
+  #     deal_community: [:river_card],
+  #     action_on: :first_left_of_dealer
+  #   }
+  # end
 
   def deal_hole_card(%State{seat_map: seat_map} = hand_state, card, seat) do
     player = seat_map[seat]
