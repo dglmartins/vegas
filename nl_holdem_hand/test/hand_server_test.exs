@@ -74,7 +74,7 @@ defmodule HandServerTest do
       assert sb_seat == 7
       assert bb_seat == 1
       assert last_to_act == 1
-      assert seat_with_action == 7
+      assert seat_with_action == 3
     end
 
     test "gets the hand initial state from ETS if previously stored, ignores new parameters" do

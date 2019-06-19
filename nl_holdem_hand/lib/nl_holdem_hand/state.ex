@@ -15,7 +15,8 @@ defmodule NlHoldemHand.State do
             current_bet_round: :pre_flop,
             dealer_seat: nil,
             sb_seat: nil,
-            bb_seat: nil
+            bb_seat: nil,
+            bet_to_call: nil
 
   def new(hand_id, table_id, min_bet, ante, seat_map, dealer_seat) do
     seat_map =
@@ -32,10 +33,11 @@ defmodule NlHoldemHand.State do
       seat_map: seat_map,
       dealer_seat: dealer_seat,
       min_raise: min_bet,
-      seat_with_action: get_next_taken_seat(dealer_seat, seat_map),
+      seat_with_action: get_first_to_act_first_round(dealer_seat, seat_map),
       sb_seat: get_next_taken_seat(dealer_seat, seat_map),
       bb_seat: get_bb_seat(dealer_seat, seat_map),
-      last_to_act: get_bb_seat(dealer_seat, seat_map)
+      last_to_act: get_bb_seat(dealer_seat, seat_map),
+      bet_to_call: min_bet
     }
   end
 
@@ -58,6 +60,12 @@ defmodule NlHoldemHand.State do
   def get_bb_seat(dealer_seat, seat_map) do
     dealer_seat
     |> get_next_taken_seat(seat_map)
+    |> get_next_taken_seat(seat_map)
+  end
+
+  def get_first_to_act_first_round(dealer_seat, seat_map) do
+    dealer_seat
+    |> get_bb_seat(seat_map)
     |> get_next_taken_seat(seat_map)
   end
 
