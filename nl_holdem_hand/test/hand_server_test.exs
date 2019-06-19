@@ -65,16 +65,18 @@ defmodule HandServerTest do
                   sb_seat: sb_seat,
                   bb_seat: bb_seat,
                   last_to_act: last_to_act,
-                  seat_with_action: seat_with_action
+                  seat_with_action: seat_with_action,
+                  bet_to_call: bet_to_call
                 }}
              ] = :ets.lookup(:hands_table, hand_id)
 
-      assert min_raise == 10
+      assert min_raise == @min_bet
       assert table_id == "test_table"
       assert sb_seat == 7
       assert bb_seat == 1
       assert last_to_act == 1
-      assert seat_with_action == 3
+      assert seat_with_action == @dealer_seat
+      assert bet_to_call == @min_bet
     end
 
     test "gets the hand initial state from ETS if previously stored, ignores new parameters" do
