@@ -80,7 +80,7 @@ defmodule NlHoldemHand.State do
   end
 
   defp leave_hand(%NlHoldemHand.State{seat_map: seat_map} = state, seat, true = _seat_taken?) do
-    player = %{seat_map[seat] | status: :away}
+    player = %{seat_map[seat] | status: :sitting_out}
     %{state | seat_map: Map.put(seat_map, seat, player)}
   end
 

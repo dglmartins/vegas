@@ -80,7 +80,7 @@ defmodule StateTest do
              cards: [],
              chip_count: 200,
              name: "Danilo",
-             status: :away
+             status: :sitting_out
            }
 
     new_hand_state = hand_state |> State.leave_hand(5)
