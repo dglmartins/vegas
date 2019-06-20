@@ -48,6 +48,65 @@ defmodule Player.State do
     }
   end
 
+  def leave_table(
+        %Player.State{status_in_tables: status_in_tables} = player,
+        table_id
+      ) do
+    player_at_table? = Map.has_key?(status_in_tables, table_id)
+    leave_table(player, table_id, player_at_table?)
+  end
+
+  def leave_table(player, _table_id, false = _player_at_table?) do
+    player
+  end
+
+  def leave_table(
+        %Player.State{
+          status_in_tables: status_in_tables
+        } = player,
+        table_id,
+        true = player_at_table?
+      ) do
+    sitting_out? = status_in_tables[table_id] == @sitting_out
+    leave_table(player, table_id, player_at_table?, sitting_out?)
+  end
+
+  def leave_table(
+        %Player.State{
+          status_in_tables: status_in_tables
+        } = player,
+        table_id,
+        true = _player_at_table?,
+        false = _sitting_out?
+      ) do
+    %{
+      player
+      | status_in_tables: Map.put(status_in_tables, table_id, @sitting_out)
+    }
+  end
+
+  def leave_table(
+        %Player.State{
+          status_in_tables: status_in_tables,
+          cards_in_tables: cards_in_tables,
+          chip_count_off_tables: chip_count_off_tables,
+          chip_count_in_tables: chip_count_in_tables
+        } = player,
+        table_id,
+        true = _player_at_table?,
+        true = _sitting_out?
+      ) do
+    chip_count_in_table = chip_count_in_tables[table_id]
+
+    %{
+      player
+      | status_in_tables: Map.delete(status_in_tables, table_id),
+        cards_in_tables: Map.delete(cards_in_tables, table_id),
+        chip_count_off_tables: chip_count_off_tables + chip_count_in_table,
+        chip_count_in_tables: Map.delete(chip_count_in_tables, table_id)
+    }
+  end
+
   def change_player_status_in_table(player, status_in_table, table_id)
       when status_in_table in @accepted_status do
     playing_at_table? = Map.has_key?(player.status_in_tables, table_id)
