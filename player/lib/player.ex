@@ -3,7 +3,7 @@ defmodule Player do
             chip_count_off_tables: nil,
             chip_count_in_tables: %{},
             status_in_tables: %{},
-            cards: []
+            cards_in_tables: %{}
 
   @active :active
   @sitting_out :sitting_out
@@ -13,21 +13,39 @@ defmodule Player do
     %Player{name: name, chip_count_off_tables: chip_count_off_tables}
   end
 
-  def join_table(%Player{status_in_tables: status_in_tables} = player, table_id) do
+  def join_table(
+        %Player{status_in_tables: status_in_tables} = player,
+        table_id,
+        desired_chip_count
+      ) do
     already_joined? = Map.has_key?(status_in_tables, table_id)
-    join_table(player, table_id, already_joined?)
+    join_table(player, table_id, desired_chip_count, already_joined?)
+  end
+
+  def join_table(player, _table_id, _desired_chip_count, true = _already_joined?) do
+    player
   end
 
   def join_table(
-        player,
+        %Player{
+          status_in_tables: status_in_tables,
+          cards_in_tables: cards_in_tables,
+          chip_count_off_tables: chip_count_off_tables,
+          chip_count_in_tables: chip_count_in_tables
+        } = player,
         table_id,
-        false = _already_joined?
+        desired_chip_count,
+        false = already_joined?
       ) do
-    %{player | status_in_tables: Map.put(player.status_in_tables, table_id, @active)}
-  end
+    desired_chip_count = min(desired_chip_count, chip_count_off_tables)
 
-  def join_table(player, _table_id, true = _already_joined?) do
-    player
+    %{
+      player
+      | status_in_tables: Map.put(status_in_tables, table_id, @active),
+        cards_in_tables: Map.put(cards_in_tables, table_id, []),
+        chip_count_off_tables: chip_count_off_tables - desired_chip_count,
+        chip_count_in_tables: Map.put(chip_count_in_tables, table_id, desired_chip_count)
+    }
   end
 
   def change_player_status_in_table(player, status_in_table, table_id)
@@ -50,6 +68,26 @@ defmodule Player do
         _table_id,
         false = _playing_at_table?
       ) do
+    player
+  end
+
+  def deal_hole_card(%Player{status_in_tables: status_in_tables} = player, table_id, card) do
+    alread_joined? = Map.has_key?(status_in_tables, table_id)
+    deal_hole_card(player, table_id, card, alread_joined?)
+  end
+
+  def deal_hole_card(
+        %Player{cards_in_tables: cards_in_tables} = player,
+        table_id,
+        card,
+        true = _already_joined?
+      ) do
+    new_cards = [card | cards_in_tables[table_id]]
+
+    %{player | cards_in_tables: Map.put(cards_in_tables, table_id, new_cards)}
+  end
+
+  def deal_hole_card(player, _table_id, _card, false = _already_joined?) do
     player
   end
 end

@@ -35,7 +35,7 @@ defmodule DeckServerTest do
 
     {:ok, _pid} = DeckServer.start_link(deck_id)
 
-    for deal <- 1..52 do
+    for _deal <- 1..52 do
       DeckServer.deal_card(deck_id)
     end
 
@@ -76,7 +76,7 @@ defmodule DeckServerTest do
 
     {:ok, _pid} = DeckServer.start_link(deck_id)
 
-    card = DeckServer.deal_card(deck_id)
+    _card = DeckServer.deal_card(deck_id)
 
     [{^deck_id, ets_deck}] = :ets.lookup(:decks_table, deck_id)
 

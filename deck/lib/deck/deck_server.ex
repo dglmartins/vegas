@@ -69,7 +69,7 @@ defmodule Deck.DeckServer do
   end
 
   def handle_call(:deal_card, _from, []) do
-    {:reply, %Deck.Card{}, [], @timeout}
+    {:reply, %Card{}, [], @timeout}
   end
 
   def handle_call(:deal_card, _from, [card_dealt | rest_of_deck]) do

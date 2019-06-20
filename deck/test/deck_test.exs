@@ -53,8 +53,8 @@ defmodule DeckTest do
     {:ok, _pid} = Deck.create_deck(deck_id_one)
     {:ok, _pid} = Deck.create_deck(deck_id_two)
 
-    card_deck_one = Deck.deal_card(deck_id_one)
-    card_deck_two = Deck.deal_card(deck_id_two)
+    _card_deck_one = Deck.deal_card(deck_id_one)
+    _card_deck_two = Deck.deal_card(deck_id_two)
 
     assert DeckServer.count_deck(deck_id_one) == 51
     assert DeckServer.count_deck(deck_id_two) == 51
