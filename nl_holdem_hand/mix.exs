@@ -23,7 +23,6 @@ defmodule NlHoldemHand.MixProject do
   defp deps do
     [
       {:player, path: "../player"},
-      {:card, path: "../card"},
       {:deck, path: "../deck"},
       {:combination, "~> 0.0.3"}
       # {:dep_from_hexpm, "~> 0.3.0"},

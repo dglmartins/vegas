@@ -2,8 +2,6 @@ defmodule TableTest do
   use ExUnit.Case
   doctest Table
 
-  alias Table.TableServer
-
   @min_bet 10
   @ante 0
   @game_type :nl_holdem
