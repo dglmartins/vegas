@@ -5,22 +5,22 @@ defmodule SetupTest do
   alias NlHoldemHand.{Setup}
 
   @seat_map %{
-    1 => %{name: "Danilo", chip_count: 200, cards: [], status: :active},
-    3 => %{name: "Paula", chip_count: 200, cards: [], status: :active},
-    7 => %{name: "Michel", chip_count: 200, cards: [], status: :active}
+    1 => Player.new("Danilo", 200),
+    3 => Player.new("Paula", 200),
+    7 => Player.new("Michel", 200)
   }
 
   @seat_map_two %{
-    1 => %{name: "Danilo", chip_count: 200, cards: [], status: :active},
-    3 => %{name: "Paula", chip_count: 200, cards: [], status: :active}
+    1 => Player.new("Danilo", 200),
+    3 => Player.new("Paula", 200)
   }
 
   @seat_map_three %{
-    1 => %{name: "Danilo", chip_count: 200, cards: [], status: :active},
-    3 => %{name: "Paula", chip_count: 200, cards: [], status: :active},
-    7 => %{name: "Michel", chip_count: 200, cards: [], status: :active},
-    9 => %{name: "Renato", chip_count: 200, cards: [], status: :active},
-    10 => %{name: "Rodrigo", chip_count: 200, cards: [], status: :active}
+    1 => Player.new("Danilo", 200),
+    3 => Player.new("Paula", 200),
+    7 => Player.new("Michel", 200),
+    9 => Player.new("Renato", 200),
+    10 => Player.new("Rodrigo", 200)
   }
 
   @table_state %{
@@ -63,7 +63,7 @@ defmodule SetupTest do
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
 
     assert Enum.count(seat_map) == 3
-    assert seat_map[1] == %{cards: [], chip_count: 200, name: "Danilo", status: :active}
+    assert seat_map[1] == %Player{cards: [], chip_count: 200, name: "Danilo", status: :active}
     assert sb_seat == 7
     assert bb_seat == 1
     assert last_to_act == 1
@@ -93,7 +93,7 @@ defmodule SetupTest do
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
 
     assert Enum.count(seat_map) == 2
-    assert seat_map[1] == %{cards: [], chip_count: 200, name: "Danilo", status: :active}
+    assert seat_map[1] == %Player{cards: [], chip_count: 200, name: "Danilo", status: :active}
     assert sb_seat == 3
     assert bb_seat == 1
     assert last_to_act == 1
@@ -123,7 +123,7 @@ defmodule SetupTest do
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
 
     assert Enum.count(seat_map) == 5
-    assert seat_map[1] == %{cards: [], chip_count: 200, name: "Danilo", status: :active}
+    assert seat_map[1] == %Player{cards: [], chip_count: 200, name: "Danilo", status: :active}
     assert sb_seat == 7
     assert bb_seat == 9
     assert last_to_act == 9
@@ -153,7 +153,7 @@ defmodule SetupTest do
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 10]
 
     assert Enum.count(seat_map) == 5
-    assert seat_map[1] == %{cards: [], chip_count: 200, name: "Danilo", status: :active}
+    assert seat_map[1] == %Player{cards: [], chip_count: 200, name: "Danilo", status: :active}
     assert sb_seat == 1
     assert bb_seat == 3
     assert last_to_act == 3
@@ -165,7 +165,7 @@ defmodule SetupTest do
   test "no new hand if not enough players" do
     hand_id = generate_hand_id()
 
-    seat_map = %{1 => %{name: "Danilo", chip_count: 200, cards: [], status: :active}}
+    seat_map = %{1 => Player.new("Danilo", 200)}
 
     table_state =
       %{@table_state | seat_map: seat_map}
@@ -173,7 +173,7 @@ defmodule SetupTest do
 
     assert table_state.current_hand_id == nil
 
-    assert table_state.seat_map[1] == %{
+    assert table_state.seat_map[1] == %Player{
              cards: [],
              chip_count: 200,
              name: "Danilo",

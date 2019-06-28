@@ -5,9 +5,9 @@ defmodule HoleCardsTest do
   alias NlHoldemHand.{Setup, Dealer}
 
   @seat_map %{
-    1 => %{name: "Danilo", chip_count: 200, cards: [], status: :active},
-    3 => %{name: "Paula", chip_count: 200, cards: [], status: :active},
-    7 => %{name: "Michel", chip_count: 200, cards: [], status: :active}
+    1 => Player.new("Danilo", 200),
+    3 => Player.new("Paula", 200),
+    7 => Player.new("Michel", 200)
   }
 
   @table_state %{
