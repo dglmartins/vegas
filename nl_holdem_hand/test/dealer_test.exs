@@ -48,6 +48,20 @@ defmodule DealerTest do
     assert Enum.count(table_state.deck) == 46
   end
 
+  test "does not deals hole cards when status is not :dealing_hole_cards" do
+    hand_id = generate_hand_id()
+
+    table_state = %{Setup.new(@table_state, hand_id) | status: :waiting}
+
+    table_state |> Dealer.deal_hole_cards()
+
+    assert table_state.seat_map[1].cards == []
+    assert table_state.seat_map[3].cards == []
+    assert table_state.seat_map[7].cards == []
+
+    assert Enum.count(table_state.deck) == 52
+  end
+
   defp generate_hand_id() do
     "hand-#{:rand.uniform(1_000_000)}"
   end

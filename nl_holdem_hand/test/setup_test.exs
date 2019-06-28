@@ -12,7 +12,7 @@ defmodule PlayTest do
 
   @table_state %{
     dealer_seat: 3,
-    status: :ready_to_start_hand,
+    status: :waiting,
     hand_history: [],
     pre_action_min_bet: 20,
     ante: 0,
@@ -43,7 +43,8 @@ defmodule PlayTest do
       bb_seat: bb_seat,
       last_to_act: last_to_act,
       seat_with_action: seat_with_action,
-      bet_to_call: bet_to_call
+      bet_to_call: bet_to_call,
+      status: status
     } = Setup.new(@table_state, hand_id)
 
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
@@ -55,6 +56,7 @@ defmodule PlayTest do
     assert last_to_act == 1
     assert seat_with_action == 3
     assert bet_to_call == 20
+    assert status == :dealing_hole_cards
   end
 
   test "no new hand if not enough players" do
@@ -80,6 +82,7 @@ defmodule PlayTest do
     assert table_state.last_to_act == nil
     assert table_state.seat_with_action == nil
     assert table_state.bet_to_call == 20
+    assert table_state.status == :waiting
   end
 
   defp generate_hand_id() do

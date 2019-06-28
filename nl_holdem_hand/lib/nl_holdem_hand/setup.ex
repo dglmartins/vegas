@@ -19,7 +19,8 @@ defmodule NlHoldemHand.Setup do
         bb_seat: SeatHelpers.get_bb_seat(dealer_seat, seat_map),
         last_to_act: SeatHelpers.get_bb_seat(dealer_seat, seat_map),
         deck: Deck.new(),
-        current_hand_id: current_hand_id
+        current_hand_id: current_hand_id,
+        status: :dealing_hole_cards
     }
   end
 
