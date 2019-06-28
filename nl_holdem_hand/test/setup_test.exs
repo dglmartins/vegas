@@ -1,8 +1,8 @@
 defmodule PlayTest do
   use ExUnit.Case
-  doctest NlHoldemHand.Play
+  doctest NlHoldemHand.Setup
 
-  alias NlHoldemHand.{Play}
+  alias NlHoldemHand.{Setup}
 
   @seat_map %{
     1 => %{name: "Danilo", chip_count: 200, cards: [], status: :active},
@@ -24,7 +24,7 @@ defmodule PlayTest do
     last_to_act: nil,
     seat_map: @seat_map,
     table_id: nil,
-    hand_id: nil,
+    current_hand_id: nil,
     current_bet_round: nil,
     sb_seat: nil,
     bb_seat: nil,
@@ -45,7 +45,7 @@ defmodule PlayTest do
       seat_with_action: seat_with_action,
       bet_to_call: bet_to_call
     } =
-      Play.new(
+      Setup.new(
         @table_state,
         hand_id
       )
@@ -65,22 +65,22 @@ defmodule PlayTest do
     assert bet_to_call == 20
   end
 
-  test "deals 2 cards to each player" do
-    hand_id = generate_hand_id()
-
-    table_state =
-      Play.new(
-        @table_state,
-        hand_id
-      )
-      |> Play.deal_hole_cards()
-
-    assert Enum.count(table_state.seat_map[1].cards) == 2
-    assert Enum.count(table_state.seat_map[3].cards) == 2
-    assert Enum.count(table_state.seat_map[7].cards) == 2
-
-    assert Enum.count(table_state.deck) == 46
-  end
+  # test "deals 2 cards to each player" do
+  #   hand_id = generate_hand_id()
+  #
+  #   table_state =
+  #     Setup.new(
+  #       @table_state,
+  #       hand_id
+  #     )
+  #     |> Setup.deal_hole_cards()
+  #
+  #   assert Enum.count(table_state.seat_map[1].cards) == 2
+  #   assert Enum.count(table_state.seat_map[3].cards) == 2
+  #   assert Enum.count(table_state.seat_map[7].cards) == 2
+  #
+  #   assert Enum.count(table_state.deck) == 46
+  # end
 
   # test "player marked as away when leave_hand is called, nothing happens when leave_hand is called on empty seat" do
   #   hand_id = generate_hand_id()
