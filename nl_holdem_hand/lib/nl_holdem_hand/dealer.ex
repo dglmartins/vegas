@@ -24,8 +24,8 @@ defmodule NlHoldemHand.Dealer do
     deal_hole_cards(new_table_state, dealer_cards_count, next_seat_to_deal)
   end
 
-  def deal_hole_cards(new_table_state, 2, _next_seat_to_deal) do
-    new_table_state
+  def deal_hole_cards(table_state, 2, _next_seat_to_deal) do
+    table_state
   end
 
   def deal_hole_card(%{seat_map: seat_map, deck: deck} = table_state, seat) do
@@ -66,4 +66,16 @@ defmodule NlHoldemHand.Dealer do
   #
   # def put_chips_in_pot(%State{seat_map: seat_map, pots: pots} = hand_state) do
   # end
+
+  # bet (table_state, desired_bet_value, seat)
+  # seat
+  # |> check_turn(table_state)
+  # |> is_all_in(seat)
+  # |> check_min_bet(desired_bet_value)
+  # |> debit_player_chips
+  # |> allocate_into_main_side_pots
+  # |> update_bet_to_call
+  # |> update_min_raise
+  # |> update_next_to_act
+  # |> update_last_to_act
 end
