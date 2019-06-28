@@ -1,4 +1,4 @@
-defmodule PlayTest do
+defmodule SetupTest do
   use ExUnit.Case
   doctest NlHoldemHand.Setup
 

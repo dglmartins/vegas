@@ -1,6 +1,4 @@
 defmodule NlHoldemHand.Dealer.HoleCards do
-  alias NlHoldemHand.SeatHelpers
-
   def deal_hole_cards(
         %{seat_map: seat_map, dealer_seat: dealer_seat, status: :dealing_hole_cards} = table_state
       ) do

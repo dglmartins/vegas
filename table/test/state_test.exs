@@ -44,7 +44,7 @@ defmodule StateTest do
 
     assert table.dealer_seat == nil
 
-    player = %{name: "Danilo", chip_count: 200, cards: []}
+    player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
 
     {_status, table} = State.join_table(table, player, 1)
 
@@ -64,7 +64,7 @@ defmodule StateTest do
 
     assert table.dealer_seat == nil
 
-    player = %{name: "Danilo", chip_count: 200, cards: []}
+    player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
 
     {_status, table} = State.join_table(table, player, 1)
 
@@ -78,7 +78,7 @@ defmodule StateTest do
 
     assert table.dealer_seat == 1
 
-    player_two = %{name: "Paula", chip_count: 200, cards: []}
+    player_two = %{name: "Paula", chip_count: 200, cards: [], status: :active}
 
     {_status, table} = State.join_table(table, player_two, 7)
 
@@ -97,14 +97,14 @@ defmodule StateTest do
 
   test "player joins cannot join taken seat" do
     table = State.new(@min_bet, @ante, @game_type)
-    player = %{name: "Danilo", chip_count: 200, cards: []}
+    player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
 
     {status, table} = State.join_table(table, player, 2)
 
     assert status == :ok
     assert table.seat_map[2] == player
 
-    player_two = %{name: "Paula", chip_count: 200, cards: []}
+    player_two = %{name: "Paula", chip_count: 200, cards: [], status: :active}
 
     {status, table} = State.join_table(table, player_two, 2)
 
@@ -114,7 +114,7 @@ defmodule StateTest do
 
   test "player leaves" do
     table = State.new(@min_bet, @ante, @game_type)
-    player = %{name: "Danilo", chip_count: 200, cards: []}
+    player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
 
     {status, table} = State.join_table(table, player, 2)
 

@@ -59,7 +59,7 @@ defmodule Table.State do
       ) do
     %{
       table_state
-      | dealer_seat: NlHoldemHand.SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
+      | dealer_seat: SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
     }
   end
 
