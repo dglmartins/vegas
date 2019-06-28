@@ -1,5 +1,5 @@
 defmodule Table.Dealer.NewHand do
-  def start(table_state, :nl_holdem = _game_type) do
-    NlHoldemHand.start_hand(table_state)
+  def start_hand(%{game_type: :nl_holdem} = table_state, hand_id) do
+    NlHoldemHand.start_hand(table_state, hand_id)
   end
 end

@@ -17,7 +17,8 @@ defmodule Table.State do
             current_bet_round: nil,
             sb_seat: nil,
             bb_seat: nil,
-            bet_to_call: nil
+            bet_to_call: nil,
+            current_hand_id: nil
 
   # deck_pid: nil
 
@@ -32,55 +33,66 @@ defmodule Table.State do
     }
   end
 
-  def move_dealer_to_seat(%Table.State{} = state, new_dealer_seat)
+  def move_dealer_to_seat(%Table.State{} = table_state, new_dealer_seat)
       when not is_integer(new_dealer_seat) or new_dealer_seat > 10 or new_dealer_seat < 1 do
-    state
+    table_state
   end
 
-  def move_dealer_to_seat(%Table.State{} = state, new_dealer_seat) do
-    %{state | dealer_seat: new_dealer_seat}
+  def move_dealer_to_seat(%Table.State{seat_map: seat_map} = table_state, new_dealer_seat) do
+    is_seat_taken? = Map.has_key?(seat_map, new_dealer_seat)
+    move_dealer_to_seat(table_state, new_dealer_seat, is_seat_taken?)
   end
 
-  def move_dealer_to_left(%Table.State{dealer_seat: nil} = state), do: state
-
-  def move_dealer_to_left(%Table.State{dealer_seat: 10} = state) do
-    %{state | dealer_seat: 1}
+  def move_dealer_to_seat(%Table.State{} = table_state, new_dealer_seat, true = _is_seat_taken?) do
+    %{table_state | dealer_seat: new_dealer_seat}
   end
 
-  def move_dealer_to_left(%Table.State{dealer_seat: new_dealer_seat} = state) do
-    %{state | dealer_seat: new_dealer_seat + 1}
+  def move_dealer_to_seat(%Table.State{} = table_state, _new_dealer_seat, false = _is_seat_taken?) do
+    IO.puts("No on sitting there")
+    table_state
   end
 
-  def join_table(%{seat_map: seat_map} = table, player, desired_seat)
+  def move_dealer_to_left(%Table.State{dealer_seat: nil} = table_state), do: table_state
+
+  def move_dealer_to_left(
+        %Table.State{dealer_seat: dealer_seat, seat_map: seat_map} = table_state
+      ) do
+    %{
+      table_state
+      | dealer_seat: NlHoldemHand.SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
+    }
+  end
+
+  def join_table(%{seat_map: seat_map} = table_state, player, desired_seat)
       when desired_seat in 1..10 do
     empty_seat? = !Map.has_key?(seat_map, desired_seat)
-    join_table(table, player, desired_seat, empty_seat?)
+    join_table(table_state, player, desired_seat, empty_seat?)
   end
 
-  def join_table(table, _player, _desired_seat) do
-    table
+  def join_table(table_state, _player, _desired_seat) do
+    table_state
   end
 
-  def join_table(%{seat_map: seat_map} = table, player, desired_seat, true = _empty_seat?) do
-    {:ok, %{table | seat_map: Map.put(seat_map, desired_seat, player)}}
+  def join_table(%{seat_map: seat_map} = table_state, player, desired_seat, true = _empty_seat?) do
+    {:ok, %{table_state | seat_map: Map.put(seat_map, desired_seat, player)}}
   end
 
-  def join_table(table, _player, _desired_seat, _false = _empty_seat?) do
+  def join_table(table_state, _player, _desired_seat, _false = _empty_seat?) do
     IO.puts("seat taken")
-    {:seat_taken, table}
+    {:seat_taken, table_state}
   end
 
-  def leave_table(%{seat_map: seat_map} = table, seat) do
+  def leave_table(%{seat_map: seat_map} = table_state, seat) do
     seat_taken? = Map.has_key?(seat_map, seat)
-    leave_table(table, seat, seat_taken?)
-    %{table | seat_map: Map.delete(seat_map, seat)}
+    leave_table(table_state, seat, seat_taken?)
+    %{table_state | seat_map: Map.delete(seat_map, seat)}
   end
 
-  def leave_table(%{seat_map: seat_map} = table, seat, true = _seat_taken?) do
-    %{table | seat_map: Map.delete(seat_map, seat)}
+  def leave_table(%{seat_map: seat_map} = table_state, seat, true = _seat_taken?) do
+    %{table_state | seat_map: Map.delete(seat_map, seat)}
   end
 
-  def leave_table(table, _seat, false = _seat_taken?) do
-    table
+  def leave_table(table_state, _seat, false = _seat_taken?) do
+    table_state
   end
 end

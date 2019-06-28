@@ -34,7 +34,7 @@ defmodule DealerTest do
   test "starts a game" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.new_hand(@table_state, hand_id)
+    table_state = Dealer.start_hand(@table_state, hand_id)
 
     assert Enum.count(table_state.seat_map[1].cards) == 2
     assert Enum.count(table_state.seat_map[3].cards) == 2

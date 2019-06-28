@@ -1,18 +1,4 @@
 defmodule NlHoldemHand do
-  @moduledoc """
-  Documentation for NlHoldemHand.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> NlHoldemHand.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
+  alias NlHoldemHand.Dealer
+  defdelegate start_hand(table_state, current_hand_id), to: Dealer
 end

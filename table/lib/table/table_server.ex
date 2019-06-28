@@ -99,7 +99,7 @@ defmodule Table.TableServer do
   def handle_call({:move_dealer_to_seat, new_seat}, _from, table_state) do
     table_state = State.move_dealer_to_seat(table_state, new_seat)
     :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, {:ok, new_seat}, table_state, @timeout}
+    {:reply, {:ok, table_state.dealer_seat}, table_state, @timeout}
   end
 
   def handle_call(:move_dealer_to_left, _from, table_state) do

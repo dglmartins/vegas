@@ -2,7 +2,7 @@ defmodule NlHoldemHand.Dealer do
   alias NlHoldemHand.Setup
   alias NlHoldemHand.Dealer.HoleCards
 
-  def new_hand(table_state, current_hand_id) do
+  def start_hand(table_state, current_hand_id) do
     table_state
     |> Setup.new(current_hand_id)
     |> HoleCards.deal_hole_cards()

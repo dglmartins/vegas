@@ -23,7 +23,7 @@ defmodule TableServerTest do
              TableServer.start_link(table_id, @min_bet, @ante, @game_type)
   end
 
-  test "gets dealer seat, moves dealer seat, moves dealer to left" do
+  test "gets dealer seat, moves dealer seat, moves dealer to left, does not move dealer if no one sitting" do
     table_id = generate_table_id()
 
     {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
@@ -34,18 +34,37 @@ defmodule TableServerTest do
 
     {:ok, new_seat} = TableServer.move_dealer_to_seat({table_id, 9})
 
-    assert new_seat == 9
+    assert new_seat == nil
     assert new_seat == TableServer.get_dealer_seat(table_id)
 
     {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
 
-    assert new_seat == 10
+    assert new_seat == nil
     assert new_seat == TableServer.get_dealer_seat(table_id)
+
+    player = %{name: "Danilo", chip_count: 200, cards: []}
+
+    _status = TableServer.join_table({table_id, player, 2})
+
+    {:ok, new_seat} = TableServer.move_dealer_to_seat({table_id, 2})
+
+    assert new_seat == 2
 
     {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
 
-    assert new_seat == 1
-    assert new_seat == TableServer.get_dealer_seat(table_id)
+    assert new_seat == 2
+
+    player_two = %{name: "Paula", chip_count: 200, cards: []}
+
+    status_two = TableServer.join_table({table_id, player_two, 7})
+
+    {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
+
+    assert new_seat == 7
+
+    {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
+
+    assert new_seat == 2
   end
 
   test "gets game type, gets min bet, gets ante" do
@@ -126,12 +145,35 @@ defmodule TableServerTest do
 
       [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
-      assert ets_table.dealer_seat == 3
+      assert ets_table.dealer_seat == nil
 
       {:ok, _dealer_seat} = TableServer.move_dealer_to_left(table_id)
       [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
-      assert ets_table.dealer_seat == 4
+      assert ets_table.dealer_seat == nil
+
+      player = %{name: "Danilo", chip_count: 200, cards: []}
+
+      player_two = %{name: "Paula", chip_count: 200, cards: []}
+
+      status = TableServer.join_table({table_id, player, 2})
+      status_two = TableServer.join_table({table_id, player_two, 7})
+
+      {:ok, _dealer_seat} = TableServer.move_dealer_to_seat({table_id, 2})
+
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert ets_table.dealer_seat == 2
+
+      {:ok, _dealer_seat} = TableServer.move_dealer_to_left(table_id)
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert ets_table.dealer_seat == 7
+
+      {:ok, _dealer_seat} = TableServer.move_dealer_to_left(table_id)
+      [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
+
+      assert ets_table.dealer_seat == 2
     end
 
     test "updates table state in ETS when players join and leave" do

@@ -22,7 +22,7 @@ defmodule StateTest do
     end
   end
 
-  test "moves dealer seat, does not move if not integer or if index > 10" do
+  test "moves dealer seat, does not move if not integer or if index > 10, does not move if no one sitting" do
     table = State.new(@min_bet, @ante, @game_type)
     assert table.dealer_seat == nil
 
@@ -30,22 +30,32 @@ defmodule StateTest do
       table
       |> State.move_dealer_to_seat(3)
 
-    assert table.dealer_seat == 3
+    assert table.dealer_seat == nil
 
     table =
       table
       |> State.move_dealer_to_seat("not an integer")
 
-    assert table.dealer_seat == 3
+    assert table.dealer_seat == nil
 
     table =
       table
       |> State.move_dealer_to_seat(11)
 
-    assert table.dealer_seat == 3
+    assert table.dealer_seat == nil
+
+    player = %{name: "Danilo", chip_count: 200, cards: []}
+
+    {_status, table} = State.join_table(table, player, 1)
+
+    table =
+      table
+      |> State.move_dealer_to_seat(1)
+
+    assert table.dealer_seat == 1
   end
 
-  test "moves dealer seat to left, moves to one if current index is 10" do
+  test "moves dealer seat to left, next taken seat, moves to one if current index is 10" do
     table = State.new(@min_bet, @ante, @game_type)
 
     table =
@@ -54,17 +64,29 @@ defmodule StateTest do
 
     assert table.dealer_seat == nil
 
+    player = %{name: "Danilo", chip_count: 200, cards: []}
+
+    {_status, table} = State.join_table(table, player, 1)
+
     table =
       table
-      |> State.move_dealer_to_seat(9)
-
-    assert table.dealer_seat == 9
+      |> State.move_dealer_to_seat(1)
 
     table =
       table
       |> State.move_dealer_to_left()
 
-    assert table.dealer_seat == 10
+    assert table.dealer_seat == 1
+
+    player_two = %{name: "Paula", chip_count: 200, cards: []}
+
+    {_status, table} = State.join_table(table, player_two, 7)
+
+    table =
+      table
+      |> State.move_dealer_to_left()
+
+    assert table.dealer_seat == 7
 
     table =
       table
@@ -75,14 +97,14 @@ defmodule StateTest do
 
   test "player joins cannot join taken seat" do
     table = State.new(@min_bet, @ante, @game_type)
-    player = %{name: "Danilo", chips_at_table: 200, cards: []}
+    player = %{name: "Danilo", chip_count: 200, cards: []}
 
     {status, table} = State.join_table(table, player, 2)
 
     assert status == :ok
     assert table.seat_map[2] == player
 
-    player_two = %{name: "Paula", chips_at_table: 200, cards: []}
+    player_two = %{name: "Paula", chip_count: 200, cards: []}
 
     {status, table} = State.join_table(table, player_two, 2)
 
@@ -92,7 +114,7 @@ defmodule StateTest do
 
   test "player leaves" do
     table = State.new(@min_bet, @ante, @game_type)
-    player = %{name: "Danilo", chips_at_table: 200, cards: []}
+    player = %{name: "Danilo", chip_count: 200, cards: []}
 
     {status, table} = State.join_table(table, player, 2)
 
