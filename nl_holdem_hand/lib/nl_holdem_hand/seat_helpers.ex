@@ -18,9 +18,23 @@ defmodule NlHoldemHand.SeatHelpers do
     seat_number
   end
 
-  def get_bb_seat(dealer_seat, seat_map) do
+  def get_sb_seat(dealer_seat, seat_map) do
+    is_heads_up? = Enum.count(seat_map) == 2
+    get_sb_seat(dealer_seat, seat_map, is_heads_up?)
+  end
+
+  def get_sb_seat(dealer_seat, seat_map, true = _is_heads_up?) do
+    dealer_seat
+  end
+
+  def get_sb_seat(dealer_seat, seat_map, false = _is_heads_up?) do
     dealer_seat
     |> get_next_taken_seat(seat_map)
+  end
+
+  def get_bb_seat(dealer_seat, seat_map) do
+    dealer_seat
+    |> get_sb_seat(seat_map)
     |> get_next_taken_seat(seat_map)
   end
 

@@ -15,7 +15,7 @@ defmodule NlHoldemHand.Setup do
     %{
       table_state
       | seat_with_action: SeatHelpers.get_first_to_act_first_round(dealer_seat, seat_map),
-        sb_seat: SeatHelpers.get_next_taken_seat(dealer_seat, seat_map),
+        sb_seat: SeatHelpers.get_sb_seat(dealer_seat, seat_map),
         bb_seat: SeatHelpers.get_bb_seat(dealer_seat, seat_map),
         last_to_act: SeatHelpers.get_bb_seat(dealer_seat, seat_map),
         deck: Deck.new(),
