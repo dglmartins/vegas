@@ -105,6 +105,8 @@ defmodule PlayTest do
   test "new hand with five players" do
     hand_id = generate_hand_id()
 
+    table_state = %{@table_state | seat_map: @seat_map_three}
+
     %{
       pre_action_min_bet: pre_action_min_bet,
       ante: ante,
@@ -116,16 +118,46 @@ defmodule PlayTest do
       seat_with_action: seat_with_action,
       bet_to_call: bet_to_call,
       status: status
-    } = Setup.new(@table_state, hand_id)
+    } = Setup.new(table_state, hand_id)
 
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
 
-    assert Enum.count(seat_map) == 3
+    assert Enum.count(seat_map) == 5
     assert seat_map[1] == %{cards: [], chip_count: 200, name: "Danilo", status: :active}
     assert sb_seat == 7
-    assert bb_seat == 1
-    assert last_to_act == 1
-    assert seat_with_action == 3
+    assert bb_seat == 9
+    assert last_to_act == 9
+    assert seat_with_action == 10
+    assert bet_to_call == 20
+    assert status == :dealing_hole_cards
+  end
+
+  test "new hand with five players when bb is seat 10" do
+    hand_id = generate_hand_id()
+
+    table_state = %{@table_state | seat_map: @seat_map_three, dealer_seat: 10}
+
+    %{
+      pre_action_min_bet: pre_action_min_bet,
+      ante: ante,
+      seat_map: seat_map,
+      dealer_seat: dealer_seat,
+      sb_seat: sb_seat,
+      bb_seat: bb_seat,
+      last_to_act: last_to_act,
+      seat_with_action: seat_with_action,
+      bet_to_call: bet_to_call,
+      status: status
+    } = Setup.new(table_state, hand_id)
+
+    assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 10]
+
+    assert Enum.count(seat_map) == 5
+    assert seat_map[1] == %{cards: [], chip_count: 200, name: "Danilo", status: :active}
+    assert sb_seat == 1
+    assert bb_seat == 3
+    assert last_to_act == 3
+    assert seat_with_action == 7
     assert bet_to_call == 20
     assert status == :dealing_hole_cards
   end

@@ -23,7 +23,7 @@ defmodule NlHoldemHand.SeatHelpers do
     get_sb_seat(dealer_seat, seat_map, is_heads_up?)
   end
 
-  def get_sb_seat(dealer_seat, seat_map, true = _is_heads_up?) do
+  def get_sb_seat(dealer_seat, _seat_map, true = _is_heads_up?) do
     dealer_seat
   end
 
