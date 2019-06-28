@@ -44,8 +44,8 @@ defmodule Table.TableServer do
     GenServer.call(via_tuple(table_id), :get_game_type)
   end
 
-  def get_min_bet_ante(table_id) do
-    GenServer.call(via_tuple(table_id), :get_min_bet_ante)
+  def get_pre_action_min_bet_ante(table_id) do
+    GenServer.call(via_tuple(table_id), :get_pre_action_min_bet_ante)
   end
 
   def join_table({table_id, player, desired_seat}) do
@@ -116,8 +116,8 @@ defmodule Table.TableServer do
     {:reply, table_state.game_type, table_state, @timeout}
   end
 
-  def handle_call(:get_min_bet_ante, _from, table_state) do
-    {:reply, {table_state.min_bet, table_state.ante}, table_state, @timeout}
+  def handle_call(:get_pre_action_min_bet_ante, _from, table_state) do
+    {:reply, {table_state.pre_action_min_bet, table_state.ante}, table_state, @timeout}
   end
 
   def handle_call({:join_table, player, desired_seat}, _from, table_state) do

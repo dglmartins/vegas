@@ -54,10 +54,10 @@ defmodule TableServerTest do
     {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 
     game_type = TableServer.get_game_type(table_id)
-    {min_bet, ante} = TableServer.get_min_bet_ante(table_id)
+    {pre_action_min_bet, ante} = TableServer.get_pre_action_min_bet_ante(table_id)
 
     assert game_type == @game_type
-    assert min_bet == @min_bet
+    assert pre_action_min_bet == @min_bet
     assert ante == @ante
   end
 
@@ -66,8 +66,9 @@ defmodule TableServerTest do
 
     {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 
-    player = Player.new("Danilo", 200)
-    player_two = Player.new("Paula", 200)
+    player = %{name: "Danilo", chip_count: 200, cards: []}
+
+    player_two = %{name: "Paula", chip_count: 200, cards: []}
 
     status = TableServer.join_table({table_id, player, 2})
     status_two = TableServer.join_table({table_id, player_two, 2})
@@ -83,7 +84,7 @@ defmodule TableServerTest do
 
     seat_map = TableServer.get_seat_map(table_id)
 
-    assert seat_map[2] == :empty_seat
+    assert seat_map[2] == nil
 
     status_two = TableServer.join_table({table_id, player_two, 2})
 
@@ -136,7 +137,7 @@ defmodule TableServerTest do
     test "updates table state in ETS when players join and leave" do
       table_id = generate_table_id()
 
-      player = Player.new("Danilo", 200)
+      player = %{name: "Danilo", chip_count: 200, cards: []}
 
       {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 
@@ -150,7 +151,7 @@ defmodule TableServerTest do
 
       [{^table_id, ets_table}] = :ets.lookup(:tables_table, table_id)
 
-      assert ets_table.seat_map[2] == :empty_seat
+      assert ets_table.seat_map[2] == nil
     end
   end
 

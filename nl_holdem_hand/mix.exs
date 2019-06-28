@@ -13,16 +13,12 @@ defmodule NlHoldemHand.MixProject do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    [
-      extra_applications: [:logger],
-      mod: {NlHoldemHand.Application, []}
-    ]
+    [extra_applications: [:logger]]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:player, path: "../player"},
       {:deck, path: "../deck"},
       {:combination, "~> 0.0.3"}
       # {:dep_from_hexpm, "~> 0.3.0"},

@@ -2,8 +2,9 @@ defmodule Player.State do
   defstruct name: nil,
             chip_count_off_tables: nil,
             chip_count_in_tables: %{},
-            status_in_tables: %{},
-            cards_in_tables: %{}
+            status_in_tables: %{}
+
+  # cards_in_tables: %{}
 
   @active :active
   @sitting_out :sitting_out
@@ -130,23 +131,23 @@ defmodule Player.State do
     player
   end
 
-  def deal_hole_card(%Player.State{status_in_tables: status_in_tables} = player, table_id, card) do
-    alread_joined? = Map.has_key?(status_in_tables, table_id)
-    deal_hole_card(player, table_id, card, alread_joined?)
-  end
-
-  def deal_hole_card(
-        %Player.State{cards_in_tables: cards_in_tables} = player,
-        table_id,
-        card,
-        true = _already_joined?
-      ) do
-    new_cards = [card | cards_in_tables[table_id]]
-
-    %{player | cards_in_tables: Map.put(cards_in_tables, table_id, new_cards)}
-  end
-
-  def deal_hole_card(player, _table_id, _card, false = _already_joined?) do
-    player
-  end
+  # def deal_hole_card(%Player.State{status_in_tables: status_in_tables} = player, table_id, card) do
+  #   alread_joined? = Map.has_key?(status_in_tables, table_id)
+  #   deal_hole_card(player, table_id, card, alread_joined?)
+  # end
+  #
+  # def deal_hole_card(
+  #       %Player.State{cards_in_tables: cards_in_tables} = player,
+  #       table_id,
+  #       card,
+  #       true = _already_joined?
+  #     ) do
+  #   new_cards = [card | cards_in_tables[table_id]]
+  #
+  #   %{player | cards_in_tables: Map.put(cards_in_tables, table_id, new_cards)}
+  # end
+  #
+  # def deal_hole_card(player, _table_id, _card, false = _already_joined?) do
+  #   player
+  # end
 end

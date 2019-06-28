@@ -1,17 +1,17 @@
-defmodule CreateTest do
+defmodule FunctionsTest do
   use ExUnit.Case
-  doctest Deck.Create
+  doctest Deck.Functions
 
-  alias Deck.Create
+  alias Deck.Functions
 
   test "creates a deck with 52 cards" do
-    deck = Create.new()
+    deck = Functions.new()
 
     assert Enum.count(deck) == 52
   end
 
   test "creates 4 of each rank, one of each suit" do
-    deck = Create.new()
+    deck = Functions.new()
 
     for rank_check <- 2..14 do
       assert Enum.count(deck, fn %{rank: rank} -> rank == rank_check end) == 4

@@ -12,13 +12,13 @@ defmodule StateTest do
     table = State.new(@min_bet, @ante, @game_type)
 
     assert table.status == :waiting
-    assert table.min_bet == 10
+    assert table.pre_action_min_bet == 10
     assert table.game_type == :nl_holdem
     assert table.ante == 0
-    assert Enum.count(table.seat_map) == 10
+    assert Enum.count(table.seat_map) == 0
 
     for seat <- 1..10 do
-      assert table.seat_map[seat] == :empty_seat
+      assert table.seat_map[seat] == nil
     end
   end
 
@@ -75,14 +75,15 @@ defmodule StateTest do
 
   test "player joins cannot join taken seat" do
     table = State.new(@min_bet, @ante, @game_type)
-    player = Player.new("Danilo", 200)
+    player = %{name: "Danilo", chips_at_table: 200, cards: []}
 
     {status, table} = State.join_table(table, player, 2)
 
     assert status == :ok
     assert table.seat_map[2] == player
 
-    player_two = Player.new("Paula", 200)
+    player_two = %{name: "Paula", chips_at_table: 200, cards: []}
+
     {status, table} = State.join_table(table, player_two, 2)
 
     assert status == :seat_taken
@@ -91,7 +92,7 @@ defmodule StateTest do
 
   test "player leaves" do
     table = State.new(@min_bet, @ante, @game_type)
-    player = Player.new("Danilo", 200)
+    player = %{name: "Danilo", chips_at_table: 200, cards: []}
 
     {status, table} = State.join_table(table, player, 2)
 
@@ -100,6 +101,6 @@ defmodule StateTest do
 
     table = State.leave_table(table, 2)
 
-    assert table.seat_map[2] == :empty_seat
+    assert table.seat_map[2] == nil
   end
 end

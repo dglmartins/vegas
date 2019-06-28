@@ -1,23 +1,34 @@
 defmodule Table.State do
-  alias Table.{SeatMap, Deck}
-
-  defstruct seat_map: nil,
-            dealer_seat: nil,
+  defstruct dealer_seat: nil,
             status: :waiting,
             hand_history: [],
-            min_bet: nil,
+            pre_action_min_bet: nil,
             ante: nil,
             game_type: nil,
-            current_hand_id_on_table: nil
+            pots: [],
+            deck: nil,
+            community_cards: [],
+            seat_with_action: nil,
+            last_to_act: nil,
+            seat_map: %{},
+            min_raise: nil,
+            table_id: nil,
+            hand_id: nil,
+            current_bet_round: nil,
+            sb_seat: nil,
+            bb_seat: nil,
+            bet_to_call: nil
 
   # deck_pid: nil
 
-  def new(min_bet, ante, game_type) do
+  def new(pre_action_min_bet, ante, game_type) do
     %Table.State{
-      seat_map: SeatMap.new_empty_table(),
+      # seat_map: SeatMap.new_empty_table(),
       ante: ante,
-      min_bet: min_bet,
-      game_type: game_type
+      pre_action_min_bet: pre_action_min_bet,
+      game_type: game_type,
+      bet_to_call: pre_action_min_bet,
+      min_raise: pre_action_min_bet
     }
   end
 
@@ -42,7 +53,7 @@ defmodule Table.State do
 
   def join_table(%{seat_map: seat_map} = table, player, desired_seat)
       when desired_seat in 1..10 do
-    empty_seat? = seat_map[desired_seat] == :empty_seat
+    empty_seat? = !Map.has_key?(seat_map, desired_seat)
     join_table(table, player, desired_seat, empty_seat?)
   end
 
@@ -59,12 +70,17 @@ defmodule Table.State do
     {:seat_taken, table}
   end
 
-  def leave_table(%{seat_map: seat_map} = table, seat)
-      when seat in 1..10 do
-    %{table | seat_map: Map.put(seat_map, seat, :empty_seat)}
+  def leave_table(%{seat_map: seat_map} = table, seat) do
+    seat_taken? = Map.has_key?(seat_map, seat)
+    leave_table(table, seat, seat_taken?)
+    %{table | seat_map: Map.delete(seat_map, seat)}
   end
 
-  def leave_table(table, _seat) do
+  def leave_table(%{seat_map: seat_map} = table, seat, true = _seat_taken?) do
+    %{table | seat_map: Map.delete(seat_map, seat)}
+  end
+
+  def leave_table(table, _seat, false = _seat_taken?) do
     table
   end
 end
