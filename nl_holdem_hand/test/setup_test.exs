@@ -18,7 +18,7 @@ defmodule PlayTest do
     ante: 0,
     game_type: :nl_holdem,
     pots: [],
-    deck: Deck.new(),
+    deck: nil,
     community_cards: [],
     seat_with_action: nil,
     last_to_act: nil,

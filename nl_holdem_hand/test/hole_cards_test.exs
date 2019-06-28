@@ -1,8 +1,8 @@
-defmodule DealerTest do
+defmodule HoleCardsTest do
   use ExUnit.Case
-  doctest NlHoldemHand.Dealer
+  doctest NlHoldemHand.Dealer.HoleCards
 
-  alias NlHoldemHand.Dealer
+  alias NlHoldemHand.{Setup, Dealer}
 
   @seat_map %{
     1 => %{name: "Danilo", chip_count: 200, cards: [], status: :active},
@@ -31,40 +31,35 @@ defmodule DealerTest do
     bet_to_call: 20
   }
 
-  test "starts a game" do
+  test "deals 2 cards to each player" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.new_hand(@table_state, hand_id)
+    table_state =
+      Setup.new(
+        @table_state,
+        hand_id
+      )
+      |> Dealer.HoleCards.deal_hole_cards()
 
     assert Enum.count(table_state.seat_map[1].cards) == 2
     assert Enum.count(table_state.seat_map[3].cards) == 2
     assert Enum.count(table_state.seat_map[7].cards) == 2
 
     assert Enum.count(table_state.deck) == 46
+  end
 
-    assert [table_state.pre_action_min_bet, table_state.ante, table_state.dealer_seat] == [
-             20,
-             0,
-             3
-           ]
+  test "does not deals hole cards when status is not :dealing_hole_cards" do
+    hand_id = generate_hand_id()
 
-    assert Enum.count(table_state.seat_map) == 3
+    table_state = %{Setup.new(@table_state, hand_id) | status: :waiting}
 
-    cards = table_state.seat_map[1].cards
+    table_state |> Dealer.HoleCards.deal_hole_cards()
 
-    assert table_state.seat_map[1] == %{
-             cards: cards,
-             chip_count: 200,
-             name: "Danilo",
-             status: :active
-           }
+    assert table_state.seat_map[1].cards == []
+    assert table_state.seat_map[3].cards == []
+    assert table_state.seat_map[7].cards == []
 
-    assert table_state.sb_seat == 7
-    assert table_state.bb_seat == 1
-    assert table_state.last_to_act == 1
-    assert table_state.seat_with_action == 3
-    assert table_state.bet_to_call == 20
-    # assert table_state.status == :dealing_hole_cards
+    assert Enum.count(table_state.deck) == 52
   end
 
   defp generate_hand_id() do
