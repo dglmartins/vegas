@@ -13,10 +13,12 @@ defmodule NewHandTest do
 
     table_state = State.new(@min_bet, @ante, @game_type)
 
-    player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
-    player_two = %{name: "Paula", chip_count: 200, cards: [], status: :active}
-    player_three = %{name: "Michel", chip_count: 200, cards: [], status: :active}
-    player_four = %{name: "Renato", chip_count: 200, cards: [], status: :active}
+    player = Player.new("Danilo", 200)
+    player_two = Player.new("Paula", 200)
+
+    player_three = Player.new("Michel", 200)
+
+    player_four = Player.new("Renato", 200)
 
     {_status, table_state} = State.join_table(table_state, player, 1)
     {_status, table_state} = State.join_table(table_state, player_two, 3)
@@ -37,18 +39,19 @@ defmodule NewHandTest do
 
     assert Enum.count(table_state.seat_map) == 4
 
-    assert table_state.seat_map[1] == %{
+    assert table_state.seat_map[1] == %Player{
              cards: danilo_cards,
              chip_count: 200,
              name: "Danilo",
-             status: :active
+             status: :active,
+             chips_commited_to_pot: 0
            }
 
     assert table_state.sb_seat == 7
     assert table_state.bb_seat == 9
     assert table_state.last_to_act == 9
     assert table_state.seat_with_action == 1
-    assert table_state.bet_to_call == 10
+    assert table_state.full_bet_to_call == 10
     # assert table_state.status == :dealing_hole_cards
   end
 

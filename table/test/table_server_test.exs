@@ -42,7 +42,7 @@ defmodule TableServerTest do
     assert new_seat == nil
     assert new_seat == TableServer.get_dealer_seat(table_id)
 
-    player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
+    player = Player.new("Danilo", 200)
 
     _status = TableServer.join_table({table_id, player, 2})
 
@@ -54,7 +54,7 @@ defmodule TableServerTest do
 
     assert new_seat == 2
 
-    player_two = %{name: "Paula", chip_count: 200, cards: [], status: :active}
+    player_two = Player.new("Danilo", 200)
 
     _status_two = TableServer.join_table({table_id, player_two, 7})
 
@@ -85,9 +85,9 @@ defmodule TableServerTest do
 
     {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 
-    player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
+    player = Player.new("Danilo", 200)
 
-    player_two = %{name: "Paula", chip_count: 200, cards: [], status: :active}
+    player_two = Player.new("Paula", 200)
 
     status = TableServer.join_table({table_id, player, 2})
     status_two = TableServer.join_table({table_id, player_two, 2})
@@ -152,9 +152,9 @@ defmodule TableServerTest do
 
       assert ets_table.dealer_seat == nil
 
-      player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
+      player = Player.new("Danilo", 200)
 
-      player_two = %{name: "Paula", chip_count: 200, cards: [], status: :active}
+      player_two = Player.new("Paula", 200)
 
       _status = TableServer.join_table({table_id, player, 2})
       _status_two = TableServer.join_table({table_id, player_two, 7})
@@ -179,7 +179,7 @@ defmodule TableServerTest do
     test "updates table state in ETS when players join and leave" do
       table_id = generate_table_id()
 
-      player = %{name: "Danilo", chip_count: 200, cards: [], status: :active}
+      player = Player.new("Danilo", 200)
 
       {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
 

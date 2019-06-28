@@ -17,7 +17,7 @@ defmodule Table.State do
             current_bet_round: nil,
             sb_seat: nil,
             bb_seat: nil,
-            bet_to_call: nil,
+            full_bet_to_call: nil,
             current_hand_id: nil
 
   # deck_pid: nil
@@ -28,7 +28,7 @@ defmodule Table.State do
       ante: ante,
       pre_action_min_bet: pre_action_min_bet,
       game_type: game_type,
-      bet_to_call: pre_action_min_bet,
+      full_bet_to_call: pre_action_min_bet,
       min_raise: pre_action_min_bet
     }
   end
