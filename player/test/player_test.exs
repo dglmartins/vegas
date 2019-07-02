@@ -10,7 +10,7 @@ defmodule PlayerTest do
              chip_count: 200,
              cards: [],
              status: :active,
-             chips_commited_to_pot: 0
+             chips_to_pot_current_bet_round: 0
            }
   end
 
@@ -24,7 +24,7 @@ defmodule PlayerTest do
              chip_count: 100,
              cards: [],
              status: :active,
-             chips_commited_to_pot: 100
+             chips_to_pot_current_bet_round: 100
            }
 
     player = player |> Player.commit_chips_to_pot(50)
@@ -34,7 +34,7 @@ defmodule PlayerTest do
              chip_count: 50,
              cards: [],
              status: :active,
-             chips_commited_to_pot: 150
+             chips_to_pot_current_bet_round: 150
            }
 
     player = player |> Player.commit_chips_to_pot(200)
@@ -44,7 +44,7 @@ defmodule PlayerTest do
              chip_count: 0,
              cards: [],
              status: :all_in,
-             chips_commited_to_pot: 200
+             chips_to_pot_current_bet_round: 200
            }
   end
 
@@ -59,7 +59,7 @@ defmodule PlayerTest do
              chip_count: 600,
              cards: [],
              status: :active,
-             chips_commited_to_pot: 0
+             chips_to_pot_current_bet_round: 0
            }
 
     player =
@@ -75,7 +75,7 @@ defmodule PlayerTest do
              chip_count: 0,
              cards: [],
              status: :eliminated,
-             chips_commited_to_pot: 0
+             chips_to_pot_current_bet_round: 0
            }
   end
 end
