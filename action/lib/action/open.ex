@@ -37,7 +37,8 @@ defmodule Action.Open do
       | seat_map: Map.put(seat_map, seat, player),
         last_to_act: last_to_act,
         bet_to_call: pre_action_min_bet,
-        seat_with_action: seat_with_action
+        seat_with_action: seat_with_action,
+        status: :action_opened
     }
   end
 
@@ -60,7 +61,8 @@ defmodule Action.Open do
         last_to_act: last_to_act,
         min_raise: bet_value,
         bet_to_call: bet_value,
-        seat_with_action: seat_with_action
+        seat_with_action: seat_with_action,
+        status: :action_opened
     }
   end
 end

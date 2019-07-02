@@ -4,7 +4,13 @@ defmodule Action.Helpers do
           table_state
       ) do
     seat_with_action = SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
-    %{table_state | status: :action_round_ended, seat_with_action: seat_with_action}
+
+    %{
+      table_state
+      | status: :action_round_ended,
+        seat_with_action: seat_with_action,
+        last_to_act: dealer_seat
+    }
   end
 
   def check_end_action(%{seat_with_action: seat, seat_map: seat_map} = table_state) do

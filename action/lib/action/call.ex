@@ -29,9 +29,12 @@ defmodule Action.Call do
         seat,
         true = _correct_turn?
       ) do
+    already_commited = seat_map[seat].chips_to_pot_current_bet_round
+    remaining_to_call = bet_to_call - already_commited
+
     player =
       seat_map[seat]
-      |> Player.commit_chips_to_pot(bet_to_call)
+      |> Player.commit_chips_to_pot(remaining_to_call)
 
     %{table_state | seat_map: Map.put(seat_map, seat, player)}
     |> Helpers.check_end_action()
