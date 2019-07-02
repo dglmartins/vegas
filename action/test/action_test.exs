@@ -98,6 +98,32 @@ defmodule ActionTest do
     assert table_state.last_to_act == 1
   end
 
+  test "Player all in with open below min bet: bet to call still min_bet" do
+    player_three = %Player{
+      cards: [
+        %Card{rank: 9, show: false, suit: :diamonds},
+        %Card{rank: 7, show: false, suit: :spades}
+      ],
+      chip_count: 10,
+      chips_to_pot_current_bet_round: 0,
+      name: "Paula",
+      status: :active
+    }
+
+    seat_map = Map.put(@seat_map, 3, player_three)
+
+    table_state =
+      %{@table_state | status: :action_to_open, seat_map: seat_map}
+      |> Action.open_bet(3, 10)
+
+    assert table_state.seat_map[3].chip_count == 0
+    assert table_state.seat_map[3].status == :all_in
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 10
+    assert table_state.bet_to_call == 20
+    assert table_state.min_raise == 20
+    assert table_state.last_to_act == 1
+  end
+
   test "open more than pre_action_min_bet increases min_raise" do
     table_state =
       %{@table_state | status: :action_to_open}
