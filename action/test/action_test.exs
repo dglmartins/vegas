@@ -112,7 +112,7 @@ defmodule ActionTest do
     assert table_state.last_to_act == 1
   end
 
-  test "goes all in if betting or calling entire stack or trying to bet or call more that entire stack " do
+  test "goes all in if calling entire stack or trying to call more that entire stack " do
     table_state =
       %{@table_state | status: :action, bet_to_call: 200}
       |> Action.place_call(3)
