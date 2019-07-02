@@ -54,18 +54,21 @@ defmodule ActionTest do
     table_state = @table_state |> Action.open_bet(1, 20)
     assert table_state.seat_map[1].chip_count == 200
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 3
   end
 
   test "does not call out of when no bet_to_call" do
     table_state = @table_state |> Action.place_call(1)
     assert table_state.seat_map[1].chip_count == 200
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 3
   end
 
   test "does not call out of :action_opened status" do
     table_state = %{@table_state | bet_to_call: 20} |> Action.place_call(1)
     assert table_state.seat_map[1].chip_count == 200
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 3
   end
 
   test "does not bet out of turn" do
@@ -75,6 +78,7 @@ defmodule ActionTest do
 
     assert table_state.seat_map[1].chip_count == 200
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 3
   end
 
   test "does not call out of turn" do
@@ -84,6 +88,7 @@ defmodule ActionTest do
 
     assert table_state.seat_map[1].chip_count == 200
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 3
   end
 
   test "attempt to bet less than pre_action_min_bet is increased to min_bet" do
@@ -96,6 +101,7 @@ defmodule ActionTest do
     assert table_state.bet_to_call == 20
     assert table_state.min_raise == 20
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 7
   end
 
   test "Player all in with open below min bet: bet to call still min_bet" do
@@ -122,6 +128,7 @@ defmodule ActionTest do
     assert table_state.bet_to_call == 20
     assert table_state.min_raise == 20
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 7
   end
 
   test "open more than pre_action_min_bet increases min_raise" do
@@ -134,6 +141,7 @@ defmodule ActionTest do
     assert table_state.min_raise == 50
     assert table_state.bet_to_call == 50
     assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 7
   end
 
   test "goes all in if betting entire stack or trying to bet more that entire stack " do
@@ -144,7 +152,7 @@ defmodule ActionTest do
     assert table_state.seat_map[3].chip_count == 0
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 200
     assert table_state.seat_map[3].status == :all_in
-
+    assert table_state.seat_with_action == 7
     assert table_state.last_to_act == 1
 
     table_state =
@@ -154,6 +162,19 @@ defmodule ActionTest do
     assert table_state.seat_map[3].chip_count == 0
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 200
     assert table_state.seat_map[3].status == :all_in
+    assert table_state.seat_with_action == 7
+    assert table_state.last_to_act == 1
+  end
+
+  test "calls a bet" do
+    table_state =
+      %{@table_state | status: :action_opened, bet_to_call: 20}
+      |> Action.place_call(3)
+
+    assert table_state.seat_map[3].chip_count == 180
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 20
+    assert table_state.seat_map[3].status == :active
+    assert table_state.seat_with_action == 7
 
     assert table_state.last_to_act == 1
   end
@@ -166,6 +187,7 @@ defmodule ActionTest do
     assert table_state.seat_map[3].chip_count == 0
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 200
     assert table_state.seat_map[3].status == :all_in
+    assert table_state.seat_with_action == 7
 
     assert table_state.last_to_act == 1
 
@@ -178,6 +200,7 @@ defmodule ActionTest do
     assert table_state.seat_map[3].chip_count == 0
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 200
     assert table_state.seat_map[3].status == :all_in
+    assert table_state.seat_with_action == 7
 
     assert table_state.last_to_act == 1
   end

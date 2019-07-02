@@ -31,6 +31,7 @@ defmodule Action.Call do
       seat_map[seat]
       |> Player.commit_chips_to_pot(bet_to_call)
 
-    %{table_state | seat_map: Map.put(seat_map, seat, player)}
+    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
+    %{table_state | seat_map: Map.put(seat_map, seat, player), seat_with_action: seat_with_action}
   end
 end

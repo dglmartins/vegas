@@ -30,12 +30,14 @@ defmodule Action.Open do
       |> Player.commit_chips_to_pot(pre_action_min_bet)
 
     last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
+    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
 
     %{
       table_state
       | seat_map: Map.put(seat_map, seat, player),
         last_to_act: last_to_act,
-        bet_to_call: pre_action_min_bet
+        bet_to_call: pre_action_min_bet,
+        seat_with_action: seat_with_action
     }
   end
 
@@ -50,13 +52,15 @@ defmodule Action.Open do
       |> Player.commit_chips_to_pot(bet_value)
 
     last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
+    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
 
     %{
       table_state
       | seat_map: Map.put(seat_map, seat, player),
         last_to_act: last_to_act,
         min_raise: bet_value,
-        bet_to_call: bet_value
+        bet_to_call: bet_value,
+        seat_with_action: seat_with_action
     }
   end
 end
