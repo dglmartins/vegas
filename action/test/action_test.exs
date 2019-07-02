@@ -56,10 +56,25 @@ defmodule ActionTest do
     assert table_state.last_to_act == 1
   end
 
+  test "does not call out of :action status" do
+    table_state = @table_state |> Action.place_call(1)
+    assert table_state.seat_map[1].chip_count == 200
+    assert table_state.last_to_act == 1
+  end
+
   test "does not bet out of turn" do
     table_state =
       %{@table_state | status: :action}
       |> Action.place_bet(1, 20)
+
+    assert table_state.seat_map[1].chip_count == 200
+    assert table_state.last_to_act == 1
+  end
+
+  test "does not call out of turn" do
+    table_state =
+      %{@table_state | status: :action}
+      |> Action.place_call(1)
 
     assert table_state.seat_map[1].chip_count == 200
     assert table_state.last_to_act == 1
@@ -89,6 +104,30 @@ defmodule ActionTest do
     table_state =
       %{@table_state | status: :action}
       |> Action.place_bet(3, 220)
+
+    assert table_state.seat_map[3].chip_count == 0
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 200
+    assert table_state.seat_map[3].status == :all_in
+
+    assert table_state.last_to_act == 1
+  end
+
+  test "goes all in if betting or calling entire stack or trying to bet or call more that entire stack " do
+    table_state =
+      %{@table_state | status: :action, bet_to_call: 200}
+      |> Action.place_call(3)
+
+    assert table_state.seat_map[3].chip_count == 0
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 200
+    assert table_state.seat_map[3].status == :all_in
+
+    assert table_state.last_to_act == 1
+
+    # calls more than entire stack goes all in
+
+    table_state =
+      %{@table_state | status: :action, bet_to_call: 220}
+      |> Action.place_call(3)
 
     assert table_state.seat_map[3].chip_count == 0
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 200

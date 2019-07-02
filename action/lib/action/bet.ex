@@ -8,11 +8,8 @@ defmodule Action.Bet do
     place_bet(table_state, seat, bet_value, correct_turn?)
   end
 
-  def place_bet(
-        table_state,
-        _seat,
-        _bet_value
-      ) do
+  def place_bet(table_state, _seat, _bet_value) do
+    IO.puts("Table not expecting action")
     table_state
   end
 
