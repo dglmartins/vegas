@@ -179,6 +179,19 @@ defmodule ActionTest do
     assert table_state.last_to_act == 1
   end
 
+  test "calls a bet ends round" do
+    table_state =
+      %{@table_state | status: :action_opened, bet_to_call: 20, last_to_act: 3}
+      |> Action.place_call(3)
+
+    assert table_state.seat_map[3].chip_count == 180
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 20
+    assert table_state.seat_map[3].status == :active
+    assert table_state.seat_with_action == 7
+
+    assert table_state.status == :action_round_ended
+  end
+
   test "goes all in if calling entire stack or trying to call more that entire stack " do
     table_state =
       %{@table_state | status: :action_opened, bet_to_call: 200}

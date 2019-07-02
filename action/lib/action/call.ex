@@ -1,4 +1,6 @@
 defmodule Action.Call do
+  alias Action.Helpers
+
   def place_call(%{bet_to_call: nil} = table_state, _seat) do
     IO.puts("No bet to call")
     table_state
@@ -31,7 +33,7 @@ defmodule Action.Call do
       seat_map[seat]
       |> Player.commit_chips_to_pot(bet_to_call)
 
-    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
-    %{table_state | seat_map: Map.put(seat_map, seat, player), seat_with_action: seat_with_action}
+    %{table_state | seat_map: Map.put(seat_map, seat, player)}
+    |> Helpers.check_end_action()
   end
 end
