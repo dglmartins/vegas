@@ -1,24 +1,24 @@
-defmodule Action.Bet do
-  def place_bet(
-        %{seat_with_action: seat_with_action, status: :action} = table_state,
+defmodule Action.Open do
+  def open_bet(
+        %{seat_with_action: seat_with_action, status: :action_to_open} = table_state,
         seat,
         bet_value
       ) do
     correct_turn? = seat == seat_with_action
-    place_bet(table_state, seat, bet_value, correct_turn?)
+    open_bet(table_state, seat, bet_value, correct_turn?)
   end
 
-  def place_bet(table_state, _seat, _bet_value) do
-    IO.puts("Table not expecting action")
+  def open_bet(table_state, _seat, _bet_value) do
+    IO.puts("Table not expecting open action")
     table_state
   end
 
-  def place_bet(table_state, _seat, _bet_value, false = _correct_turn?) do
+  def open_bet(table_state, _seat, _bet_value, false = _correct_turn?) do
     IO.puts("Seat attempting to bet out of turn")
     table_state
   end
 
-  def place_bet(
+  def open_bet(
         %{seat_map: seat_map, pre_action_min_bet: pre_action_min_bet} = table_state,
         seat,
         bet_value,
@@ -31,10 +31,15 @@ defmodule Action.Bet do
 
     last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
 
-    %{table_state | seat_map: Map.put(seat_map, seat, player), last_to_act: last_to_act}
+    %{
+      table_state
+      | seat_map: Map.put(seat_map, seat, player),
+        last_to_act: last_to_act,
+        bet_to_call: pre_action_min_bet
+    }
   end
 
-  def place_bet(
+  def open_bet(
         %{seat_map: seat_map} = table_state,
         seat,
         bet_value,
@@ -46,6 +51,12 @@ defmodule Action.Bet do
 
     last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
 
-    %{table_state | seat_map: Map.put(seat_map, seat, player), last_to_act: last_to_act}
+    %{
+      table_state
+      | seat_map: Map.put(seat_map, seat, player),
+        last_to_act: last_to_act,
+        min_raise: bet_value,
+        bet_to_call: bet_value
+    }
   end
 end

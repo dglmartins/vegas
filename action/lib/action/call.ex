@@ -1,11 +1,19 @@
 defmodule Action.Call do
-  def place_call(%{seat_with_action: seat_with_action, status: :action} = table_state, seat) do
+  def place_call(%{bet_to_call: nil} = table_state, _seat) do
+    IO.puts("No bet to call")
+    table_state
+  end
+
+  def place_call(
+        %{seat_with_action: seat_with_action, status: :action_opened} = table_state,
+        seat
+      ) do
     correct_turn? = seat == seat_with_action
     place_call(table_state, seat, correct_turn?)
   end
 
   def place_call(table_state, _seat) do
-    IO.puts("Table not expecting action")
+    IO.puts("Table not expecting call action")
     table_state
   end
 
