@@ -57,10 +57,22 @@ defmodule Table.State do
   def move_dealer_to_left(
         %Table.State{dealer_seat: dealer_seat, seat_map: seat_map} = table_state
       ) do
-    %{
-      table_state
-      | dealer_seat: SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
-    }
+    next_seat = SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
+    move_dealer_to_left(table_state, next_seat)
+  end
+
+  def move_dealer_to_left(
+        table_state,
+        :no_active_seats
+      ) do
+    table_state
+  end
+
+  def move_dealer_to_left(
+        table_state,
+        next_seat
+      ) do
+    %{table_state | dealer_seat: next_seat}
   end
 
   def join_table(%{seat_map: seat_map} = table_state, player, desired_seat)

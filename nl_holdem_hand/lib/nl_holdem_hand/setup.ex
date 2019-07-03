@@ -2,7 +2,8 @@ defmodule NlHoldemHand.Setup do
   alias NlHoldemHand.SeatSetup
 
   def new(%{seat_map: seat_map} = table_state, current_hand_id) do
-    enough_players? = Enum.count(seat_map) >= 2
+    active_seat_map = seat_map |> Enum.filter(fn {_seat, player} -> player.status == :active end)
+    enough_players? = Enum.count(active_seat_map) >= 2
 
     new(table_state, current_hand_id, enough_players?)
   end
@@ -25,7 +26,7 @@ defmodule NlHoldemHand.Setup do
   end
 
   def new(table_state, _current_hand_id, false = _enough_players?) do
-    IO.puts("Not enough players, need at least 2")
+    IO.puts("Not enough players, need at least 2 active players")
     table_state
   end
 end

@@ -44,7 +44,7 @@ defmodule NewHandTest do
              chip_count: 200,
              name: "Danilo",
              status: :active,
-             chips_commited_to_pot: 0
+             chips_to_pot_current_bet_round: 0
            }
 
     assert table_state.sb_seat == 7
