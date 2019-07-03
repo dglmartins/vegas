@@ -1,7 +1,7 @@
 defmodule Action.Call do
   alias Action.Helpers
 
-  def place_call(%{bet_to_call: nil} = table_state, _seat) do
+  def place_call(%{bet_to_call: 0} = table_state, _seat) do
     IO.puts("No bet to call")
     table_state
   end

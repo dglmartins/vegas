@@ -15,7 +15,7 @@ defmodule Action.Antes do
       seat_map[dealer_seat]
       |> Player.commit_chips_to_pot(ante)
 
-    %{table_state | seat_map: Map.put(seat_map, dealer_seat, player)}
+    %{table_state | seat_map: Map.put(seat_map, dealer_seat, player), bet_to_call: ante}
   end
 
   defp post_ante(

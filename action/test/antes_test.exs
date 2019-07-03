@@ -39,7 +39,7 @@ defmodule AntesTest do
     seat_map: @seat_map,
     sb_seat: 7,
     bb_seat: 1,
-    bet_to_call: nil,
+    bet_to_call: 0,
     min_raise: 20
   }
 
