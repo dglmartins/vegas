@@ -79,7 +79,6 @@ defmodule CheckTest do
       |> Check.check(3)
 
     assert table_state.seat_map[1].chip_count == 200
-    assert table_state.seat_with_action == 7
 
     assert table_state.status == :action_round_ended
   end

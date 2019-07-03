@@ -129,7 +129,7 @@ defmodule ActionTest do
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 210
     assert table_state.bet_to_call == 210
     assert table_state.min_raise == 100
-    assert table_state.last_to_act == 1
+    assert table_state.last_to_act == 7
     assert table_state.seat_with_action == 7
 
     table_state =
@@ -141,8 +141,6 @@ defmodule ActionTest do
     assert table_state.seat_map[7].chips_to_pot_current_bet_round == 210
     assert table_state.bet_to_call == 210
     assert table_state.min_raise == 100
-    assert table_state.last_to_act == 3
-    assert table_state.seat_with_action == 7
     assert table_state.status == :action_round_ended
   end
 end

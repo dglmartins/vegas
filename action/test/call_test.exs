@@ -97,7 +97,6 @@ defmodule CallTest do
     assert table_state.seat_map[3].chip_count == 180
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 20
     assert table_state.seat_map[3].status == :active
-    assert table_state.seat_with_action == 7
 
     assert table_state.status == :action_round_ended
   end
