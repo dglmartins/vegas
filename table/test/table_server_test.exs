@@ -4,8 +4,8 @@ defmodule TableServerTest do
 
   alias Table.{TableServer, State}
 
-  @min_bet 10
-  @ante 0
+  @min_bet 20
+  @ante 2
   @game_type :nl_holdem
 
   test "spawning a table server process" do
@@ -114,6 +114,69 @@ defmodule TableServerTest do
     assert seat_map[2] == player_two
   end
 
+  test "does not start at hand with no dealer" do
+    table_id = generate_table_id()
+    hand_id = generate_hand_id()
+
+    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
+
+    player = Player.new("Danilo", 250)
+    player_three = Player.new("Paula", 220)
+    player_seven = Player.new("Michel", 180)
+
+    TableServer.join_table({table_id, player, 1})
+    TableServer.join_table({table_id, player_three, 3})
+    TableServer.join_table({table_id, player_seven, 7})
+
+    :ok = TableServer.start_hand({table_id, hand_id})
+
+    seat_map = TableServer.get_seat_map(table_id)
+
+    assert Enum.count(seat_map[1].cards) == 0
+    assert Enum.count(seat_map[3].cards) == 0
+    assert Enum.count(seat_map[7].cards) == 0
+  end
+
+  test "does not start at hand with not enough players" do
+    table_id = generate_table_id()
+    hand_id = generate_hand_id()
+
+    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
+
+    player = Player.new("Danilo", 250)
+
+    TableServer.join_table({table_id, player, 1})
+    {:ok, _dealer_seat} = TableServer.move_dealer_to_seat({table_id, 1})
+
+    :ok = TableServer.start_hand({table_id, hand_id})
+
+    seat_map = TableServer.get_seat_map(table_id)
+
+    assert Enum.count(seat_map[1].cards) == 0
+  end
+
+  test "starts at hand with at least two players and a dealer" do
+    table_id = generate_table_id()
+    hand_id = generate_hand_id()
+
+    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
+
+    player = Player.new("Danilo", 250)
+    player_three = Player.new("Paula", 220)
+
+    TableServer.join_table({table_id, player, 1})
+    TableServer.join_table({table_id, player_three, 3})
+
+    {:ok, _dealer_seat} = TableServer.move_dealer_to_seat({table_id, 3})
+
+    :ok = TableServer.start_hand({table_id, hand_id})
+
+    seat_map = TableServer.get_seat_map(table_id)
+
+    assert Enum.count(seat_map[1].cards) == 2
+    assert Enum.count(seat_map[3].cards) == 2
+  end
+
   describe "ets" do
     test "stores initial table state in ETS when started" do
       table_id = generate_table_id()
@@ -212,5 +275,9 @@ defmodule TableServerTest do
 
   defp generate_table_id() do
     "table-#{:rand.uniform(1_000_000)}"
+  end
+
+  defp generate_hand_id() do
+    "hand-#{:rand.uniform(1_000_000)}"
   end
 end

@@ -1,6 +1,6 @@
-defmodule NewHandTest do
+defmodule DealerTest do
   use ExUnit.Case
-  doctest Table.Dealer.NewHand
+  doctest Table.Dealer
 
   alias Table.{State, Dealer}
 
@@ -27,7 +27,7 @@ defmodule NewHandTest do
 
     table_state = State.move_dealer_to_seat(table_state, 3)
 
-    table_state = Dealer.NewHand.start_hand(table_state, hand_id)
+    table_state = Dealer.start_hand(table_state, hand_id)
 
     danilo_cards = table_state.seat_map[1].cards
 

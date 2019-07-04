@@ -1,6 +1,11 @@
 defmodule NlHoldemHand.Setup do
   alias NlHoldemHand.SeatSetup
 
+  def new(%{dealer_seat: nil} = table_state, current_hand_id) do
+    IO.puts("No dealer")
+    table_state
+  end
+
   def new(%{seat_map: seat_map} = table_state, current_hand_id) do
     active_seat_map = seat_map |> Enum.filter(fn {_seat, player} -> player.status == :active end)
     enough_players? = Enum.count(active_seat_map) >= 2

@@ -53,7 +53,7 @@ defmodule Table.State do
   end
 
   def move_dealer_to_seat(%Table.State{} = table_state, _new_dealer_seat, false = _is_seat_taken?) do
-    IO.puts("No on sitting there")
+    IO.puts("No one sitting there")
     table_state
   end
 

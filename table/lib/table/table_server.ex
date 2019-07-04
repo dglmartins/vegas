@@ -7,7 +7,7 @@ defmodule Table.TableServer do
 
   require Logger
 
-  alias Table.{State, Deck}
+  alias Table.{State, Dealer}
 
   @timeout :timer.minutes(10)
 
@@ -54,6 +54,10 @@ defmodule Table.TableServer do
 
   def leave_table({table_id, seat}) do
     GenServer.call(via_tuple(table_id), {:leave_table, seat})
+  end
+
+  def start_hand({table_id, hand_id}) do
+    GenServer.call(via_tuple(table_id), {:start_hand, table_id, hand_id})
   end
 
   @doc """
@@ -128,6 +132,12 @@ defmodule Table.TableServer do
 
   def handle_call({:leave_table, seat}, _from, table_state) do
     table_state = State.leave_table(table_state, seat)
+    :ets.insert(:tables_table, {my_table_id(), table_state})
+    {:reply, :ok, table_state, @timeout}
+  end
+
+  def handle_call({:start_hand, table_id, hand_id}, _from, table_state) do
+    table_state = Dealer.start_hand(table_state, hand_id)
     :ets.insert(:tables_table, {my_table_id(), table_state})
     {:reply, :ok, table_state, @timeout}
   end
