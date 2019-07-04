@@ -23,7 +23,7 @@ defmodule Action.Antes do
       | seat_map: Map.put(seat_map, dealer_seat, player),
         bet_to_call: ante
     }
-    |> Helpers.check_end_action_after_antes_blinds()
+    |> Helpers.check_end_hand()
   end
 
   defp post_ante(

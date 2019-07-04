@@ -149,7 +149,7 @@ defmodule AntesTest do
     assert table_state.seat_map[1].chips_to_pot_current_bet_round == 3
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 2
     assert table_state.seat_map[7].chips_to_pot_current_bet_round == 1
-    assert table_state.status == :action_round_ended
+    assert table_state.status == :deal_to_showdown
   end
 
   test "posts antes everyone but one player in ends round" do
@@ -179,6 +179,6 @@ defmodule AntesTest do
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 2
     assert table_state.seat_map[4].chips_to_pot_current_bet_round == 5
     assert table_state.seat_map[7].chips_to_pot_current_bet_round == 1
-    assert table_state.status == :action_round_ended
+    assert table_state.status == :deal_to_showdown
   end
 end

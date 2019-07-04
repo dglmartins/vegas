@@ -3,10 +3,7 @@ defmodule Action.Helpers do
   def check_end_action_after_check_or_call(
         %{seat_with_action: seat, last_to_act: seat} = table_state
       ) do
-    %{
-      table_state
-      | status: :action_round_ended
-    }
+    check_end_hand(table_state)
   end
 
   def check_end_action_after_check_or_call(
@@ -18,41 +15,72 @@ defmodule Action.Helpers do
     %{table_state | seat_with_action: seat_with_action}
   end
 
-  def check_end_action_after_antes_blinds(%{seat_map: seat_map, status: status} = table_state)
-      when status in [:posting_antes, :posting_blinds] do
-    number_of_active_players =
-      seat_map
-      |> Enum.filter(fn {_seat, player} -> player.status == :active end)
-      |> Enum.count()
-
-    check_end_action(table_state, number_of_active_players)
-  end
-
   def check_end_action_after_raise(%{seat_with_action: :no_other_seats} = table_state) do
-    %{
-      table_state
-      | status: :action_round_ended
-    }
+    check_end_hand(table_state)
   end
 
   def check_end_action_after_raise(table_state) do
     table_state
   end
 
-  def check_end_action(
+  def check_end_hand(%{seat_map: seat_map, status: status} = table_state) do
+    number_of_active_players =
+      seat_map
+      |> Enum.filter(fn {_seat, player} -> player.status == :active end)
+      |> Enum.count()
+
+    number_of_all_in_players =
+      seat_map
+      |> Enum.filter(fn {_seat, player} -> player.status == :all_in end)
+      |> Enum.count()
+
+    check_end_hand(
+      table_state,
+      number_of_active_players,
+      number_of_all_in_players
+    )
+  end
+
+  def check_end_hand(
         table_state,
-        number_of_active_players
+        number_of_active_players,
+        number_of_all_in_players
       )
-      when number_of_active_players <= 1 do
+      when number_of_active_players == 0 and number_of_all_in_players == 1 do
     %{
       table_state
-      | status: :action_round_ended
+      | status: :end_hand_no_showdown
     }
   end
 
-  def check_end_action(
+  def check_end_hand(
+        table_state,
+        number_of_active_players,
+        number_of_all_in_players
+      )
+      when number_of_active_players <= 1 and number_of_all_in_players > 0 do
+    %{
+      table_state
+      | status: :deal_to_showdown
+    }
+  end
+
+  def check_end_hand(
+        table_state,
+        number_of_active_players,
+        number_of_all_in_players
+      )
+      when number_of_active_players <= 1 and number_of_all_in_players == 0 do
+    %{
+      table_state
+      | status: :end_hand_no_showdown
+    }
+  end
+
+  def check_end_hand(
         %{status: :posting_antes} = table_state,
-        _number_of_active_players
+        _number_of_active_players,
+        _number_of_all_in_players
       ) do
     %{
       table_state
@@ -60,13 +88,25 @@ defmodule Action.Helpers do
     }
   end
 
-  def check_end_action(
+  def check_end_hand(
         %{status: :posting_blinds} = table_state,
-        _number_of_active_players
+        _number_of_active_players,
+        _number_of_all_in_players
       ) do
     %{
       table_state
       | status: :action_opened
+    }
+  end
+
+  def check_end_hand(
+        table_state,
+        _number_of_active_players,
+        _number_of_all_in_players
+      ) do
+    %{
+      table_state
+      | status: :action_round_ended
     }
   end
 end
