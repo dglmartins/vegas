@@ -44,6 +44,7 @@ defmodule HoleCardsTest do
     assert Enum.count(table_state.seat_map[1].cards) == 2
     assert Enum.count(table_state.seat_map[3].cards) == 2
     assert Enum.count(table_state.seat_map[7].cards) == 2
+    assert table_state.status == :posting_antes
 
     assert Enum.count(table_state.deck) == 46
   end

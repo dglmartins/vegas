@@ -2,7 +2,7 @@ defmodule BlindsTest do
   use ExUnit.Case
   doctest Action.Blinds
 
-  alias Action.{Antes, Blinds}
+  alias Action.{Blinds}
 
   @seat_map %{
     1 => %Player{
@@ -30,7 +30,7 @@ defmodule BlindsTest do
 
   @table_state %{
     dealer_seat: 3,
-    status: :posting_blinds_antes,
+    status: :posting_blinds,
     pre_action_min_bet: 20,
     ante: 5,
     community_cards: [],

@@ -1,9 +1,12 @@
 defmodule Action.Antes do
+  @accepted_ante_status [:active]
+
+  alias Action.Helpers
+
   def post_antes(
-        %{status: :posting_blinds_antes, seat_map: seat_map, dealer_seat: dealer_seat} =
-          table_state
+        %{status: :posting_antes, seat_map: seat_map, dealer_seat: dealer_seat} = table_state
       ) do
-    first_to_post = SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
+    first_to_post = SeatHelpers.get_next_taken_seat(dealer_seat, seat_map, @accepted_ante_status)
     post_ante(table_state, first_to_post)
   end
 
@@ -15,7 +18,12 @@ defmodule Action.Antes do
       seat_map[dealer_seat]
       |> Player.commit_chips_to_pot(ante)
 
-    %{table_state | seat_map: Map.put(seat_map, dealer_seat, player), bet_to_call: ante}
+    %{
+      table_state
+      | seat_map: Map.put(seat_map, dealer_seat, player),
+        bet_to_call: ante
+    }
+    |> Helpers.check_end_action_after_antes_blinds()
   end
 
   defp post_ante(
@@ -28,7 +36,7 @@ defmodule Action.Antes do
 
     table_state = %{table_state | seat_map: Map.put(seat_map, seat, player)}
 
-    next_to_post = SeatHelpers.get_next_taken_seat(seat, seat_map)
+    next_to_post = SeatHelpers.get_next_taken_seat(seat, seat_map, @accepted_ante_status)
 
     post_ante(table_state, next_to_post)
   end

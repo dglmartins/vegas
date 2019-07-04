@@ -21,7 +21,7 @@ defmodule Table.State do
             current_hand_id: nil
 
   # deck_pid: nil
-
+  @accepted_dealer_status [:active]
   def new(pre_action_min_bet, ante, game_type) do
     %Table.State{
       # seat_map: SeatMap.new_empty_table(),
@@ -43,12 +43,36 @@ defmodule Table.State do
     move_dealer_to_seat(table_state, new_dealer_seat, is_seat_taken?)
   end
 
-  def move_dealer_to_seat(%Table.State{} = table_state, new_dealer_seat, true = _is_seat_taken?) do
-    %{table_state | dealer_seat: new_dealer_seat}
+  def move_dealer_to_seat(
+        %Table.State{seat_map: seat_map} = table_state,
+        new_dealer_seat,
+        true = is_seat_taken?
+      ) do
+    is_active_seat? = seat_map[new_dealer_seat].status == :active
+    move_dealer_to_seat(table_state, new_dealer_seat, is_seat_taken?, is_active_seat?)
   end
 
   def move_dealer_to_seat(%Table.State{} = table_state, _new_dealer_seat, false = _is_seat_taken?) do
     IO.puts("No on sitting there")
+    table_state
+  end
+
+  def move_dealer_to_seat(
+        %Table.State{} = table_state,
+        new_dealer_seat,
+        true = _is_seat_taken?,
+        true = _is_active_seat?
+      ) do
+    %{table_state | dealer_seat: new_dealer_seat}
+  end
+
+  def move_dealer_to_seat(
+        %Table.State{} = table_state,
+        _new_dealer_seat,
+        _is_seat_taken?,
+        false = _is_active_seat?
+      ) do
+    IO.puts("No active player sitting there")
     table_state
   end
 
@@ -57,13 +81,13 @@ defmodule Table.State do
   def move_dealer_to_left(
         %Table.State{dealer_seat: dealer_seat, seat_map: seat_map} = table_state
       ) do
-    next_seat = SeatHelpers.get_next_taken_seat(dealer_seat, seat_map)
+    next_seat = SeatHelpers.get_next_taken_seat(dealer_seat, seat_map, @accepted_dealer_status)
     move_dealer_to_left(table_state, next_seat)
   end
 
   def move_dealer_to_left(
         table_state,
-        :no_active_seats
+        :no_other_seats
       ) do
     table_state
   end

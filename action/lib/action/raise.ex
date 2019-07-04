@@ -1,9 +1,15 @@
 defmodule Action.Raise do
+  @last_to_act_accepted_status [:active]
+  @seat_with_action_accepted_status [:active]
+
+  alias Action.Helpers
+
   def raise_bet(
-        %{seat_with_action: seat_with_action, status: :action_opened} = table_state,
+        %{seat_with_action: seat_with_action, status: status} = table_state,
         seat,
         bet_value
-      ) do
+      )
+      when status in [:action_opened, :action_raised] do
     correct_turn? = seat == seat_with_action
     raise_bet(table_state, seat, bet_value, correct_turn?)
   end
@@ -35,16 +41,21 @@ defmodule Action.Raise do
       player
       |> Player.commit_chips_to_pot(max_bet_value)
 
-    last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
-    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
+    last_to_act =
+      SeatHelpers.get_previous_taken_seat(seat, seat_map, @last_to_act_accepted_status)
+
+    seat_with_action =
+      SeatHelpers.get_next_taken_seat(seat, seat_map, @seat_with_action_accepted_status)
 
     %{
       table_state
       | seat_map: Map.put(seat_map, seat, player),
         last_to_act: last_to_act,
         bet_to_call: max_bet_value + already_commited,
-        seat_with_action: seat_with_action
+        seat_with_action: seat_with_action,
+        status: :action_raised
     }
+    |> Helpers.check_end_action_after_raise()
   end
 
   def raise_bet(
@@ -63,8 +74,11 @@ defmodule Action.Raise do
       player
       |> Player.commit_chips_to_pot(max_bet_value)
 
-    last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
-    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
+    last_to_act =
+      SeatHelpers.get_previous_taken_seat(seat, seat_map, @last_to_act_accepted_status)
+
+    seat_with_action =
+      SeatHelpers.get_next_taken_seat(seat, seat_map, @seat_with_action_accepted_status)
 
     %{
       table_state
@@ -72,7 +86,9 @@ defmodule Action.Raise do
         last_to_act: last_to_act,
         min_raise: raise_value,
         bet_to_call: max_bet_value + already_commited,
-        seat_with_action: seat_with_action
+        seat_with_action: seat_with_action,
+        status: :action_raised
     }
+    |> Helpers.check_end_action_after_raise()
   end
 end

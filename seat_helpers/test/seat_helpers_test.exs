@@ -17,20 +17,28 @@ defmodule SeatHelpersTest do
   }
 
   test "gets next seat taken" do
-    assert SeatHelpers.get_next_taken_seat(1, @seat_map) == 3
-    assert SeatHelpers.get_next_taken_seat(3, @seat_map) == 7
-    assert SeatHelpers.get_next_taken_seat(7, @seat_map) == 1
-    assert SeatHelpers.get_next_taken_seat(10, @seat_map) == 1
+    assert SeatHelpers.get_next_taken_seat(1, @seat_map, [:active]) == 3
+    assert SeatHelpers.get_next_taken_seat(3, @seat_map, [:active]) == 7
+    assert SeatHelpers.get_next_taken_seat(7, @seat_map, [:active]) == 1
+    assert SeatHelpers.get_next_taken_seat(7, @seat_map, [:active, :all_in]) == 10
+    assert SeatHelpers.get_next_taken_seat(1, @seat_map, [:fold]) == 9
+
+    assert SeatHelpers.get_next_taken_seat(10, @seat_map, [:active]) == 1
   end
 
   test "gets previous seat taken" do
-    assert SeatHelpers.get_previous_taken_seat(1, @seat_map) == 7
-    assert SeatHelpers.get_previous_taken_seat(3, @seat_map) == 1
-    assert SeatHelpers.get_previous_taken_seat(7, @seat_map) == 3
-    assert SeatHelpers.get_previous_taken_seat(10, @seat_map) == 7
+    assert SeatHelpers.get_previous_taken_seat(1, @seat_map, [:active]) == 7
+    assert SeatHelpers.get_previous_taken_seat(3, @seat_map, [:active]) == 1
+    assert SeatHelpers.get_previous_taken_seat(7, @seat_map, [:active]) == 3
+    assert SeatHelpers.get_previous_taken_seat(10, @seat_map, [:active]) == 7
+    assert SeatHelpers.get_previous_taken_seat(1, @seat_map, [:active, :all_in]) == 10
+  end
+
+  test "no active previous seats" do
+    assert SeatHelpers.get_previous_taken_seat(1, @seat_map_two, [:active]) == :no_other_seats
   end
 
   test "no active next seats" do
-    assert SeatHelpers.get_previous_taken_seat(1, @seat_map_two) == :no_active_seats
+    assert SeatHelpers.get_next_taken_seat(1, @seat_map_two, [:active]) == :no_other_seats
   end
 end

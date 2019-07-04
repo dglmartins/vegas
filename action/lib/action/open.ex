@@ -1,4 +1,7 @@
 defmodule Action.Open do
+  @last_to_act_accepted_status [:active]
+  @seat_with_action_accepted_status [:active]
+
   def open_bet(
         %{seat_with_action: seat_with_action, status: :action_to_open} = table_state,
         seat,
@@ -29,8 +32,11 @@ defmodule Action.Open do
       seat_map[seat]
       |> Player.commit_chips_to_pot(pre_action_min_bet)
 
-    last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
-    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
+    last_to_act =
+      SeatHelpers.get_previous_taken_seat(seat, seat_map, @last_to_act_accepted_status)
+
+    seat_with_action =
+      SeatHelpers.get_next_taken_seat(seat, seat_map, @seat_with_action_accepted_status)
 
     %{
       table_state
@@ -52,8 +58,11 @@ defmodule Action.Open do
       seat_map[seat]
       |> Player.commit_chips_to_pot(bet_value)
 
-    last_to_act = SeatHelpers.get_previous_taken_seat(seat, seat_map)
-    seat_with_action = SeatHelpers.get_next_taken_seat(seat, seat_map)
+    last_to_act =
+      SeatHelpers.get_previous_taken_seat(seat, seat_map, @last_to_act_accepted_status)
+
+    seat_with_action =
+      SeatHelpers.get_next_taken_seat(seat, seat_map, @seat_with_action_accepted_status)
 
     %{
       table_state

@@ -21,6 +21,6 @@ defmodule Action.Check do
 
   def check(table_state, _seat, true = _correct_turn?) do
     table_state
-    |> Helpers.check_end_action()
+    |> Helpers.check_end_action_after_check_or_call()
   end
 end

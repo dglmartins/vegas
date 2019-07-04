@@ -1,7 +1,9 @@
 defmodule Action.Blinds do
+  alias Action.Helpers
+
   def post_blinds(
         %{
-          status: :posting_blinds_antes,
+          status: :posting_blinds,
           seat_map: seat_map,
           sb_seat: sb_seat,
           bb_seat: bb_seat,
@@ -25,8 +27,8 @@ defmodule Action.Blinds do
     %{
       table_state
       | seat_map: seat_map,
-        bet_to_call: pre_action_min_bet + bet_to_call,
-        status: :action_opened
+        bet_to_call: pre_action_min_bet + bet_to_call
     }
+    |> Helpers.check_end_action_after_antes_blinds()
   end
 end

@@ -7,9 +7,10 @@ defmodule Action.Call do
   end
 
   def place_call(
-        %{seat_with_action: seat_with_action, status: :action_opened} = table_state,
+        %{seat_with_action: seat_with_action, status: status} = table_state,
         seat
-      ) do
+      )
+      when status in [:action_opened, :action_raised] do
     correct_turn? = seat == seat_with_action
     place_call(table_state, seat, correct_turn?)
   end
@@ -37,6 +38,6 @@ defmodule Action.Call do
       |> Player.commit_chips_to_pot(remaining_to_call)
 
     %{table_state | seat_map: Map.put(seat_map, seat, player)}
-    |> Helpers.check_end_action()
+    |> Helpers.check_end_action_after_check_or_call()
   end
 end
