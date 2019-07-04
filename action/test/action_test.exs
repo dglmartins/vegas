@@ -143,4 +143,171 @@ defmodule ActionTest do
     assert table_state.min_raise == 100
     assert table_state.status == :deal_to_showdown
   end
+
+  test "post_antes, post_blinds, call bb, raise, raise all in, fold, call" do
+    table_state =
+      @table_state
+      |> Action.post_antes()
+      |> Action.post_blinds()
+      |> Action.place_call(3)
+
+    assert table_state.seat_map[3].chip_count == 185
+    assert table_state.seat_map[3].status == :active
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 25
+    assert table_state.bet_to_call == 25
+    assert table_state.min_raise == 20
+
+    assert table_state.last_to_act == 1
+
+    assert table_state.seat_with_action == 7
+
+    table_state =
+      table_state
+      |> Action.raise_bet(7, 100)
+
+    assert table_state.seat_map[7].chip_count == 125
+    assert table_state.seat_map[7].status == :active
+    assert table_state.seat_map[7].chips_to_pot_current_bet_round == 125
+    assert table_state.bet_to_call == 125
+    assert table_state.min_raise == 100
+    assert table_state.last_to_act == 3
+    assert table_state.seat_with_action == 1
+
+    table_state =
+      table_state
+      |> Action.raise_bet(1, 75)
+
+    assert table_state.seat_map[1].chip_count == 0
+    assert table_state.seat_map[1].status == :all_in
+    assert table_state.seat_map[1].chips_to_pot_current_bet_round == 190
+    assert table_state.bet_to_call == 190
+    assert table_state.min_raise == 100
+    assert table_state.last_to_act == 7
+    assert table_state.seat_with_action == 3
+
+    table_state =
+      table_state
+      |> Action.fold(3)
+
+    assert table_state.seat_map[3].chip_count == 185
+    assert table_state.seat_map[3].status == :fold
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 25
+    assert table_state.bet_to_call == 190
+    assert table_state.min_raise == 100
+    assert table_state.last_to_act == 7
+    assert table_state.seat_with_action == 7
+
+    table_state =
+      table_state
+      |> Action.place_call(7)
+
+    assert table_state.seat_map[7].chip_count == 60
+    assert table_state.seat_map[7].status == :active
+    assert table_state.seat_map[7].chips_to_pot_current_bet_round == 190
+    assert table_state.bet_to_call == 190
+    assert table_state.min_raise == 100
+    assert table_state.status == :deal_to_showdown
+  end
+
+  test "post_antes, post_blinds, fold, fold" do
+    table_state =
+      @table_state
+      |> Action.post_antes()
+      |> Action.post_blinds()
+      |> Action.fold(3)
+      |> Action.fold(7)
+
+    assert table_state.bet_to_call == 25
+    assert table_state.seat_map[3].status == :fold
+    assert table_state.seat_map[7].status == :fold
+    assert table_state.status == :end_hand_no_showdown
+  end
+
+  test "post_antes, post_blinds, raise, fold, fold" do
+    table_state =
+      @table_state
+      |> Action.post_antes()
+      |> Action.post_blinds()
+      |> Action.raise_bet(3, 50)
+      |> Action.fold(7)
+      |> Action.fold(1)
+
+    assert table_state.bet_to_call == 75
+    assert table_state.seat_map[1].status == :fold
+    assert table_state.seat_map[7].status == :fold
+    assert table_state.status == :end_hand_no_showdown
+  end
+
+  test "post_antes, post_blinds, call, call, call" do
+    table_state =
+      @table_state
+      |> Action.post_antes()
+      |> Action.post_blinds()
+      |> Action.place_call(3)
+      |> Action.place_call(7)
+      |> Action.place_call(1)
+
+    assert table_state.bet_to_call == 25
+    assert table_state.seat_map[1].status == :active
+    assert table_state.seat_map[3].status == :active
+    assert table_state.seat_map[7].status == :active
+    assert table_state.seat_with_action == 7
+
+    assert table_state.status == :action_round_ended
+  end
+
+  test "post_antes, post_blinds, call, raise, call, call -> next round bet call call" do
+    table_state =
+      @table_state
+      |> Action.post_antes()
+      |> Action.post_blinds()
+      |> Action.place_call(3)
+      |> Action.raise_bet(7, 50)
+      |> Action.place_call(1)
+      |> Action.place_call(3)
+
+    assert table_state.bet_to_call == 75
+    assert table_state.seat_map[1].chip_count == 115
+    assert table_state.seat_map[3].chip_count == 135
+    assert table_state.seat_map[7].chip_count == 175
+
+    assert table_state.seat_map[1].status == :active
+    assert table_state.seat_map[3].status == :active
+    assert table_state.seat_map[7].status == :active
+    assert table_state.status == :action_round_ended
+    assert table_state.seat_with_action == 7
+
+    player_one = Player.reset_chips_to_pot_current_bet_round(table_state.seat_map[1])
+    player_three = Player.reset_chips_to_pot_current_bet_round(table_state.seat_map[3])
+    player_seven = Player.reset_chips_to_pot_current_bet_round(table_state.seat_map[7])
+
+    table_state = %{table_state | seat_map: Map.put(table_state.seat_map, 1, player_one)}
+    table_state = %{table_state | seat_map: Map.put(table_state.seat_map, 3, player_three)}
+    table_state = %{table_state | seat_map: Map.put(table_state.seat_map, 7, player_seven)}
+
+    table_state =
+      %{table_state | status: :action_to_open, bet_to_call: 0}
+      |> Action.open_bet(7, 50)
+      |> Action.place_call(1)
+      |> Action.place_call(3)
+
+    assert table_state.bet_to_call == 50
+    assert table_state.seat_map[1].status == :active
+    assert table_state.seat_map[3].status == :active
+    assert table_state.seat_map[7].status == :active
+    assert table_state.status == :action_round_ended
+    assert table_state.seat_with_action == 7
+
+    assert table_state.seat_map[1].chip_count == 65
+    assert table_state.seat_map[3].chip_count == 85
+    assert table_state.seat_map[7].chip_count == 125
+    assert table_state.seat_map[1].status == :active
+    assert table_state.seat_map[3].status == :active
+    assert table_state.seat_map[7].status == :active
+
+    assert table_state.seat_map[7].chips_to_pot_current_bet_round == 50
+    assert table_state.bet_to_call == 50
+    assert table_state.min_raise == 50
+    assert table_state.status == :action_round_ended
+  end
 end

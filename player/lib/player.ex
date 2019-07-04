@@ -5,7 +5,7 @@ defmodule Player do
             status: :active,
             chips_to_pot_current_bet_round: 0
 
-  alias Player.{Create, Chips}
+  alias Player.{Create, Chips, Status}
 
   defdelegate new(name, chip_count), to: Create
 
@@ -14,4 +14,6 @@ defmodule Player do
   defdelegate commit_chips_to_pot(player, chips), to: Chips
 
   defdelegate reset_player_add_chips(player, chips_won), to: Chips
+  defdelegate reset_chips_to_pot_current_bet_round(player), to: Chips
+  defdelegate fold(player), to: Status
 end

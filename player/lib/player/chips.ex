@@ -59,4 +59,8 @@ defmodule Player.Chips do
         cards: []
     }
   end
+
+  def reset_chips_to_pot_current_bet_round(%Player{} = player) do
+    %{player | chips_to_pot_current_bet_round: 0}
+  end
 end

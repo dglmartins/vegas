@@ -14,6 +14,18 @@ defmodule PlayerTest do
            }
   end
 
+  test "player folds" do
+    player = Player.new("Danilo", 200)
+
+    assert player |> Player.fold() == %Player{
+             name: "Danilo",
+             chip_count: 200,
+             cards: [],
+             status: :fold,
+             chips_to_pot_current_bet_round: 0
+           }
+  end
+
   test "bets to chips_commited_to_pot" do
     player =
       Player.new("Danilo", 200)

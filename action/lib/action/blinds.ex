@@ -13,7 +13,7 @@ defmodule Action.Blinds do
       ) do
     sb_player =
       seat_map[sb_seat]
-      |> Player.commit_chips_to_pot(pre_action_min_bet / 2)
+      |> Player.commit_chips_to_pot(round(pre_action_min_bet / 2))
 
     bb_player =
       seat_map[bb_seat]

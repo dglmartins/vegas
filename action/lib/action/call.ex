@@ -38,6 +38,6 @@ defmodule Action.Call do
       |> Player.commit_chips_to_pot(remaining_to_call)
 
     %{table_state | seat_map: Map.put(seat_map, seat, player)}
-    |> Helpers.check_end_action_after_check_or_call()
+    |> Helpers.check_end_action_after_check_call()
   end
 end
