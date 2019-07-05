@@ -25,7 +25,7 @@ defmodule DealerTest do
     {_status, table_state} = State.join_table(table_state, player_three, 7)
     {_status, table_state} = State.join_table(table_state, player_four, 9)
 
-    table_state = State.move_dealer_to_seat(table_state, 3)
+    table_state = SeatHelpers.move_dealer_to_seat(table_state, 3)
 
     table_state = Dealer.start_hand(table_state, hand_id)
 

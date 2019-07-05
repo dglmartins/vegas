@@ -1,10 +1,10 @@
 defmodule Table.Dealer do
   alias Table.State
 
-  # def start_hand(%{game_type: :nl_holdem} = table_state, hand_id) do
-  #   NlHoldemHand.start_hand(table_state, hand_id)
-  # end
-  #
+  def start_hand(%{game_type: :nl_holdem} = table_state, hand_id) do
+    NlHoldemHand.start_hand(table_state, hand_id)
+  end
+
   # def post_antes(table_state) do
   #   table_state
   #   |> Action.post_antes()
