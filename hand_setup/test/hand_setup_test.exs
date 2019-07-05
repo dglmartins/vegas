@@ -1,8 +1,6 @@
-defmodule SetupTest do
+defmodule HandSetupTest do
   use ExUnit.Case
-  doctest NlHoldemHand.Setup
-
-  alias NlHoldemHand.{Setup}
+  doctest HandSetup
 
   @seat_map %{
     1 => Player.new("Danilo", 200),
@@ -58,7 +56,7 @@ defmodule SetupTest do
       seat_with_action: seat_with_action,
       bet_to_call: bet_to_call,
       status: status
-    } = Setup.new(@table_state, hand_id)
+    } = HandSetup.new(@table_state, hand_id)
 
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
 
@@ -88,7 +86,7 @@ defmodule SetupTest do
       seat_with_action: seat_with_action,
       bet_to_call: bet_to_call,
       status: status
-    } = Setup.new(table_state, hand_id)
+    } = HandSetup.new(table_state, hand_id)
 
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
 
@@ -118,7 +116,7 @@ defmodule SetupTest do
       seat_with_action: seat_with_action,
       bet_to_call: bet_to_call,
       status: status
-    } = Setup.new(table_state, hand_id)
+    } = HandSetup.new(table_state, hand_id)
 
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 3]
 
@@ -148,7 +146,7 @@ defmodule SetupTest do
       seat_with_action: seat_with_action,
       bet_to_call: bet_to_call,
       status: status
-    } = Setup.new(table_state, hand_id)
+    } = HandSetup.new(table_state, hand_id)
 
     assert [pre_action_min_bet, ante, dealer_seat] == [20, 0, 10]
 
@@ -169,7 +167,7 @@ defmodule SetupTest do
 
     table_state =
       %{@table_state | seat_map: seat_map}
-      |> Setup.new(hand_id)
+      |> HandSetup.new(hand_id)
 
     assert table_state.current_hand_id == nil
 

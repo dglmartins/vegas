@@ -2,7 +2,7 @@ defmodule HoleCardsTest do
   use ExUnit.Case
   doctest NlHoldemHand.Dealer.HoleCards
 
-  alias NlHoldemHand.{Setup, Dealer}
+  alias NlHoldemHand.Dealer
 
   @seat_map %{
     1 => Player.new("Danilo", 200),
@@ -35,7 +35,7 @@ defmodule HoleCardsTest do
     hand_id = generate_hand_id()
 
     table_state =
-      Setup.new(
+      HandSetup.new(
         @table_state,
         hand_id
       )
@@ -52,7 +52,7 @@ defmodule HoleCardsTest do
   test "does not deals hole cards when status is not :dealing_hole_cards" do
     hand_id = generate_hand_id()
 
-    table_state = %{Setup.new(@table_state, hand_id) | status: :waiting}
+    table_state = %{HandSetup.new(@table_state, hand_id) | status: :waiting}
 
     table_state |> Dealer.HoleCards.deal_hole_cards()
 

@@ -1,6 +1,8 @@
 defmodule SeatSetupTest do
   use ExUnit.Case
-  doctest SeatSetup
+  doctest HandSetup.SeatSetup
+
+  alias HandSetup.SeatSetup
 
   @seat_map %{
     1 => Player.new("Danilo", 200),

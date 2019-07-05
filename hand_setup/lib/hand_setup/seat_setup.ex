@@ -1,4 +1,4 @@
-defmodule SeatSetup do
+defmodule HandSetup.SeatSetup do
   @sb_bb_accepted_status [:active, :all_in]
   @first_to_act_accepted_status [:active]
 

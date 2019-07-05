@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :seat_setup, key: :value
+#     config :hand_setup, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:seat_setup, :key)
+#     Application.get_env(:hand_setup, :key)
 #
 # You can also configure a third-party app:
 #

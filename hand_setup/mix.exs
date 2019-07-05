@@ -1,9 +1,9 @@
-defmodule SeatSetup.MixProject do
+defmodule HandSetup.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :seat_setup,
+      app: :hand_setup,
       version: "0.1.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
@@ -22,6 +22,7 @@ defmodule SeatSetup.MixProject do
   defp deps do
     [
       {:player, path: "../player"},
+      {:deck, path: "../deck"},
       {:seat_helpers, path: "../seat_helpers"}
 
       # {:dep_from_hexpm, "~> 0.3.0"},
