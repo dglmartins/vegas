@@ -31,4 +31,9 @@ defmodule Action.Blinds do
     }
     |> Helpers.check_end_hand()
   end
+
+  def post_blinds(table_state) do
+    IO.puts("Not in blind posting state")
+    table_state
+  end
 end

@@ -43,6 +43,14 @@ defmodule BlindsTest do
     min_raise: 20
   }
 
+  test "does not post blinds when out of blind posting state" do
+    table_state = %{@table_state | status: :end_hand_no_showdown} |> Blinds.post_blinds()
+    assert table_state.seat_map[1].chip_count == 195
+    assert table_state.last_to_act == 1
+    assert table_state.seat_with_action == 3
+    assert table_state.status == :end_hand_no_showdown
+  end
+
   test "posts blinds" do
     table_state =
       @table_state

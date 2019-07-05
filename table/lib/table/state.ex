@@ -18,7 +18,8 @@ defmodule Table.State do
             sb_seat: nil,
             bb_seat: nil,
             full_bet_to_call: nil,
-            current_hand_id: nil
+            current_hand_id: nil,
+            turn_time_left: nil
 
   # deck_pid: nil
   @accepted_dealer_status [:active]
