@@ -1,6 +1,4 @@
 defmodule NlHoldemHand.Setup do
-  alias NlHoldemHand.SeatSetup
-
   def new(%{dealer_seat: nil} = table_state, current_hand_id) do
     IO.puts("No dealer")
     table_state
