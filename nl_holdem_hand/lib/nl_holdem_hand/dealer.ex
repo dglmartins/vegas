@@ -1,11 +1,10 @@
 defmodule NlHoldemHand.Dealer do
   alias NlHoldemHand.Setup
-  alias NlHoldemHand.Dealer.HoleCards
 
   def start_hand(table_state, current_hand_id) do
     table_state
     |> HandSetup.new(current_hand_id)
-    |> HoleCards.deal_hole_cards()
+    |> HoleCards.deal([false, false])
   end
 
   # def post_antes(%State{ante: ante} = hand_state) do

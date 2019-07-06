@@ -50,14 +50,17 @@ defmodule DealerTest do
 
     assert Enum.count(table_state.seat_map) == 3
 
-    cards = table_state.seat_map[1].cards
+    [card_one, card_two] = table_state.seat_map[1].cards
 
     assert table_state.seat_map[1] == %Player{
-             cards: cards,
+             cards: [card_one, card_two],
              chip_count: 200,
              name: "Danilo",
              status: :active
            }
+
+    assert card_one.show == false
+    assert card_two.show == false
 
     assert table_state.sb_seat == 7
     assert table_state.bb_seat == 1
