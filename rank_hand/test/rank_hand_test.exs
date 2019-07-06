@@ -1,8 +1,6 @@
 defmodule RankHandTest do
   use ExUnit.Case
-  doctest NlHoldemHand.RankHand
-
-  alias NlHoldemHand.RankHand
+  doctest RankHand
 
   test "finds best hand between hand and board" do
     hole_cards = [Card.new(9, :spades), Card.new(9, :diamonds)]
