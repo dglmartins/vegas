@@ -66,8 +66,8 @@ defmodule StartHandTest do
     assert table_state.bb_seat == 1
     assert table_state.last_to_act == 1
     assert table_state.seat_with_action == 3
-    assert table_state.bet_to_call == 20
-    assert table_state.status == :posting_antes
+    assert table_state.bet_to_call == 5
+    assert table_state.status == :posting_blinds
   end
 
   defp generate_hand_id() do
