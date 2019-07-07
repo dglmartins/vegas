@@ -1,9 +1,9 @@
-defmodule Table.MixProject do
+defmodule Dealer.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :table,
+      app: :dealer,
       version: "0.1.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
@@ -14,8 +14,7 @@ defmodule Table.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: {Table.Application, []}
+      extra_applications: [:logger]
     ]
   end
 
@@ -23,10 +22,7 @@ defmodule Table.MixProject do
   defp deps do
     [
       {:nl_holdem_hand, path: "../nl_holdem_hand"},
-      {:seat_helpers, path: "../seat_helpers"},
-      {:player, path: "../player"},
-      {:action, path: "../action"},
-      {:dealer, path: "../dealer"}
+      {:player, path: "../player"}
 
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
