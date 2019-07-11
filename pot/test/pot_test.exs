@@ -56,13 +56,23 @@ defmodule PotTest do
       name: "Danilo",
       status: :all_in
     },
+    2 => %{
+      cards: [
+        %{rank: 9, show: false, suit: :diamonds},
+        %{rank: 7, show: false, suit: :spades}
+      ],
+      chip_count: 0,
+      chips_to_pot_current_bet_round: 15,
+      name: "Paula",
+      status: :all_in
+    },
     3 => %{
       cards: [
         %{rank: 9, show: false, suit: :diamonds},
         %{rank: 7, show: false, suit: :spades}
       ],
       chip_count: 0,
-      chips_to_pot_current_bet_round: 20,
+      chips_to_pot_current_bet_round: 10,
       name: "Paula",
       status: :all_in
     },
@@ -145,15 +155,15 @@ defmodule PotTest do
     assert table_state.seat_map[9].chip_count == 260
   end
 
-  test "distributes to pots, returns excess chips, when several players all in" do
+  test "distributes to pots, returns excess chips, creates several side pots properly when several players all in" do
     table_state = %{@table_state | seat_map: @seat_map_two}
     table_state = Pot.distribute_to_pots(table_state)
 
     assert table_state.pots == [
              %{seats: [:all_active], pot_value: 40},
-             %{seats: [:all_active, 1, 3, 7], pot_value: 250},
-             %{seats: [:all_active, 3, 7], pot_value: 40},
-             %{seats: [:all_active, 7], pot_value: 30}
+             %{seats: [:all_active, 1, 3, 2, 7], pot_value: 260},
+             %{seats: [:all_active, 2, 7], pot_value: 20},
+             %{seats: [:all_active, 7], pot_value: 45}
            ]
 
     assert table_state.seat_map[1].chips_to_pot_current_bet_round == 0

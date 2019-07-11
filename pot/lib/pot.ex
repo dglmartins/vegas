@@ -20,12 +20,25 @@ defmodule Pot do
     table_state
     |> return_excess_bet()
     |> create_side_pots()
+    |> filter_zero_value_side_pots()
     |> add_remaining_active_pot()
   end
 
   def distribute_to_pots(table_state) do
     IO.puts("Table not expecting distribute to pots")
     table_state
+  end
+
+  defp filter_zero_value_side_pots(%{pots: [active_pot | side_pots]} = table_state) do
+    side_pots =
+      side_pots
+      |> Enum.filter(fn side_pot ->
+        side_pot.pot_value != 0
+      end)
+
+    pots = [active_pot] ++ side_pots
+
+    %{table_state | pots: pots}
   end
 
   def reset_chips_to_current_pot(seat_map) do
