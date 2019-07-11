@@ -160,32 +160,6 @@ defmodule HandSetupTest do
     assert status == :dealing_hole_cards
   end
 
-  # test "no new hand if not enough players" do
-  #   hand_id = generate_hand_id()
-  #
-  #   seat_map = %{1 => Player.new("Danilo", 200)}
-  #
-  #   table_state =
-  #     %{@table_state | seat_map: seat_map}
-  #     |> HandSetup.new(hand_id)
-  #
-  #   assert table_state.current_hand_id == nil
-  #
-  #   assert table_state.seat_map[1] == %Player{
-  #            cards: [],
-  #            chip_count: 200,
-  #            name: "Danilo",
-  #            status: :active
-  #          }
-  #
-  #   assert table_state.sb_seat == nil
-  #   assert table_state.bb_seat == nil
-  #   assert table_state.last_to_act == nil
-  #   assert table_state.seat_with_action == nil
-  #   assert table_state.bet_to_call == 20
-  #   assert table_state.status == :waiting
-  # end
-
   defp generate_hand_id() do
     "hand-#{:rand.uniform(1_000_000)}"
   end
