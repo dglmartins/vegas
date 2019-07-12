@@ -1,5 +1,5 @@
 defmodule Dealer.StartHand do
-  def start_hand(%{dealer_seat: nil} = table_state, hand_id) do
+  def start_hand(%{dealer_seat: nil} = table_state, _hand_id) do
     IO.puts("No dealer")
     table_state
   end
@@ -16,8 +16,11 @@ defmodule Dealer.StartHand do
     table_state
   end
 
-  def start_hand(%{game_type: :nl_holdem} = table_state, hand_id, true = _enough_players) do
-    NlHoldemHand.start_hand(table_state, hand_id)
+  def start_hand(table_state, hand_id, true = _enough_players) do
+    table_state
+    |> HandSetup.new(hand_id)
+
+    # NlHoldemHand.start_hand(table_state, hand_id)
     # |> Action.post_antes()
   end
 

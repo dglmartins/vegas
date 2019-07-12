@@ -4,10 +4,6 @@ defmodule StartHandTest do
 
   alias Dealer.StartHand
 
-  @min_bet 10
-  @ante 0
-  @game_type :nl_holdem
-
   @seat_map %{
     1 => %Player{
       cards: [],

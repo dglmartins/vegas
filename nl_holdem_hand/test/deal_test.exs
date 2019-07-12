@@ -1,8 +1,8 @@
 defmodule DealTest do
   use ExUnit.Case
-  doctest NlHoldemHand.Dealer.Deal
+  doctest NlHoldemHand.Deal
 
-  alias NlHoldemHand.Dealer
+  alias NlHoldemHand.Deal
 
   @seat_map %{
     1 => Player.new("Danilo", 200),
@@ -34,11 +34,13 @@ defmodule DealTest do
   test "deals flop" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.start_hand(@table_state, hand_id)
+    table_state =
+      @table_state
+      |> HandSetup.new(hand_id)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_flop(table_state)
+    table_state = Deal.deal_flop(table_state)
     assert Enum.count(table_state.community_cards) == 3
     assert Enum.count(table_state.deck) == 49
   end
@@ -46,18 +48,20 @@ defmodule DealTest do
   test "does not deal another flop with community cards are already on the board" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.start_hand(@table_state, hand_id)
+    table_state =
+      @table_state
+      |> HandSetup.new(hand_id)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_flop(table_state)
+    table_state = Deal.deal_flop(table_state)
     assert Enum.count(table_state.community_cards) == 3
     assert Enum.count(table_state.deck) == 49
     assert table_state.status == :action_to_open
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_flop(table_state)
+    table_state = Deal.deal_flop(table_state)
     assert Enum.count(table_state.community_cards) == 3
     assert Enum.count(table_state.deck) == 49
   end
@@ -65,15 +69,17 @@ defmodule DealTest do
   test "deals turn" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.start_hand(@table_state, hand_id)
+    table_state =
+      @table_state
+      |> HandSetup.new(hand_id)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_flop(table_state)
+    table_state = Deal.deal_flop(table_state)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_turn(table_state)
+    table_state = Deal.deal_turn(table_state)
     assert Enum.count(table_state.community_cards) == 4
     assert Enum.count(table_state.deck) == 48
   end
@@ -81,27 +87,29 @@ defmodule DealTest do
   test "does not deal turn with community cards count different than 3" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.start_hand(@table_state, hand_id)
+    table_state =
+      @table_state
+      |> HandSetup.new(hand_id)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_turn(table_state)
+    table_state = Deal.deal_turn(table_state)
 
     assert Enum.count(table_state.community_cards) == 0
     assert Enum.count(table_state.deck) == 52
 
-    table_state = Dealer.Deal.deal_flop(table_state)
+    table_state = Deal.deal_flop(table_state)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_turn(table_state)
+    table_state = Deal.deal_turn(table_state)
 
     assert Enum.count(table_state.community_cards) == 4
     assert Enum.count(table_state.deck) == 48
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_turn(table_state)
+    table_state = Deal.deal_turn(table_state)
 
     assert Enum.count(table_state.community_cards) == 4
     assert Enum.count(table_state.deck) == 48
@@ -110,19 +118,21 @@ defmodule DealTest do
   test "deals river" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.start_hand(@table_state, hand_id)
+    table_state =
+      @table_state
+      |> HandSetup.new(hand_id)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_flop(table_state)
+    table_state = Deal.deal_flop(table_state)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_turn(table_state)
+    table_state = Deal.deal_turn(table_state)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_river(table_state)
+    table_state = Deal.deal_river(table_state)
 
     assert Enum.count(table_state.community_cards) == 5
     assert Enum.count(table_state.deck) == 47
@@ -131,26 +141,28 @@ defmodule DealTest do
   test "does not deal river with community cards count different than 4" do
     hand_id = generate_hand_id()
 
-    table_state = Dealer.start_hand(@table_state, hand_id)
+    table_state =
+      @table_state
+      |> HandSetup.new(hand_id)
 
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_river(table_state)
+    table_state = Deal.deal_river(table_state)
 
     assert Enum.count(table_state.community_cards) == 0
     assert Enum.count(table_state.deck) == 52
 
-    table_state = Dealer.Deal.deal_flop(table_state)
+    table_state = Deal.deal_flop(table_state)
     table_state = %{table_state | status: :dealing_community_cards}
 
-    table_state = Dealer.Deal.deal_river(table_state)
+    table_state = Deal.deal_river(table_state)
 
     assert Enum.count(table_state.community_cards) == 3
     assert Enum.count(table_state.deck) == 49
 
-    table_state = Dealer.Deal.deal_turn(table_state)
+    table_state = Deal.deal_turn(table_state)
     table_state = %{table_state | status: :dealing_community_cards}
-    table_state = Dealer.Deal.deal_river(table_state)
+    table_state = Deal.deal_river(table_state)
 
     assert Enum.count(table_state.community_cards) == 5
     assert Enum.count(table_state.deck) == 47

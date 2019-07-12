@@ -1,4 +1,4 @@
-defmodule NlHoldemHand.Dealer.Deal do
+defmodule NlHoldemHand.Deal do
   def deal_hole_cards(table_state) do
     table_state
     |> HoleCards.deal([false, false])

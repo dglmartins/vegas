@@ -19,12 +19,10 @@ defmodule NlHoldemHand.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:deck, path: "../deck"},
-      {:seat_helpers, path: "../seat_helpers"},
       {:player, path: "../player"},
-      {:hand_setup, path: "../hand_setup"},
       {:hole_cards, path: "../hole_cards"},
-      {:community_cards, path: "../community_cards"}
+      {:community_cards, path: "../community_cards"},
+      {:hand_setup, path: "../hand_setup"}
 
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
