@@ -108,6 +108,69 @@ defmodule PotTest do
     }
   }
 
+  @seat_map_three %{
+    1 => %{
+      cards: [
+        %{rank: 7, show: false, suit: :hearts},
+        %{rank: 11, show: false, suit: :spades}
+      ],
+      chip_count: 60,
+      chips_to_pot_current_bet_round: 10,
+      name: "Danilo",
+      status: :fold
+    },
+    2 => %{
+      cards: [
+        %{rank: 9, show: false, suit: :diamonds},
+        %{rank: 7, show: false, suit: :spades}
+      ],
+      chip_count: 80,
+      chips_to_pot_current_bet_round: 15,
+      name: "Paula",
+      status: :fold
+    },
+    3 => %{
+      cards: [
+        %{rank: 9, show: false, suit: :diamonds},
+        %{rank: 7, show: false, suit: :spades}
+      ],
+      chip_count: 90,
+      chips_to_pot_current_bet_round: 10,
+      name: "Paula",
+      status: :fold
+    },
+    7 => %{
+      cards: [
+        %{rank: 7, show: false, suit: :diamonds},
+        %{rank: 11, show: false, suit: :diamonds}
+      ],
+      chip_count: 100,
+      chips_to_pot_current_bet_round: 30,
+      name: "Michel",
+      status: :fold
+    },
+    9 => %{
+      cards: [
+        %{rank: 7, show: false, suit: :diamonds},
+        %{rank: 11, show: false, suit: :diamonds}
+      ],
+      chip_count: 250,
+      chips_to_pot_current_bet_round: 60,
+      name: "Renato",
+      status: :active
+    },
+    10 => %{
+      cards: [
+        %{rank: 7, show: false, suit: :diamonds},
+        %{rank: 11, show: false, suit: :diamonds}
+      ],
+      chip_count: 250,
+      chips_to_pot_current_bet_round: 40,
+      name: "Renato",
+      status: :fold
+    }
+  }
+
   @table_state %{
     dealer_seat: 3,
     status: :action_round_ended,
@@ -178,6 +241,30 @@ defmodule PotTest do
     assert table_state.seat_map[3].chip_count == 0
 
     assert table_state.seat_map[7].chip_count == 0
+
+    assert table_state.seat_map[9].chip_count == 260
+    assert table_state.seat_map[10].chip_count == 250
+  end
+
+  test "when hand no showdown" do
+    table_state = %{@table_state | seat_map: @seat_map_three}
+    table_state = Pot.distribute_to_pots(table_state)
+
+    assert table_state.pots == [%{seats: [:all_active], pot_value: 355}]
+
+    assert table_state.seat_map[1].chips_to_pot_current_bet_round == 0
+    assert table_state.seat_map[3].chips_to_pot_current_bet_round == 0
+
+    assert table_state.seat_map[7].chips_to_pot_current_bet_round == 0
+
+    assert table_state.seat_map[9].chips_to_pot_current_bet_round == 0
+    assert table_state.seat_map[10].chips_to_pot_current_bet_round == 0
+
+    assert table_state.seat_map[1].chip_count == 60
+    assert table_state.seat_map[2].chip_count == 80
+    assert table_state.seat_map[3].chip_count == 90
+
+    assert table_state.seat_map[7].chip_count == 100
 
     assert table_state.seat_map[9].chip_count == 260
     assert table_state.seat_map[10].chip_count == 250
