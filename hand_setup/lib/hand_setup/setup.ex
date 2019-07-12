@@ -1,4 +1,6 @@
 defmodule HandSetup.Setup do
+  @accepted_start_hand_status [:waiting, :hand_finished]
+
   alias HandSetup.SeatSetup
 
   def new(
@@ -13,7 +15,7 @@ defmodule HandSetup.Setup do
         last_to_act: SeatSetup.get_last_to_act_first_round(dealer_seat, seat_map),
         deck: Deck.new(),
         current_hand_id: current_hand_id,
-        status: :dealing_hole_cards
+        status: :starting_hand
     }
   end
 end

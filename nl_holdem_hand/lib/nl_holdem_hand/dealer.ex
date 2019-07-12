@@ -4,7 +4,8 @@ defmodule NlHoldemHand.Dealer do
   def start_hand(table_state, current_hand_id) do
     table_state
     |> HandSetup.new(current_hand_id)
-    |> Deal.deal_hole_cards()
+
+    # |> Deal.deal_hole_cards()
   end
 
   # def post_antes(%State{ante: ante} = hand_state) do

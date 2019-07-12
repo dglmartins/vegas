@@ -18,7 +18,7 @@ defmodule Dealer.StartHand do
 
   def start_hand(%{game_type: :nl_holdem} = table_state, hand_id, true = _enough_players) do
     NlHoldemHand.start_hand(table_state, hand_id)
-    |> Action.post_antes()
+    # |> Action.post_antes()
   end
 
   # def post_antes(table_state) do

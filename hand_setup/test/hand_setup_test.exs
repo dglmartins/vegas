@@ -67,7 +67,7 @@ defmodule HandSetupTest do
     assert last_to_act == 1
     assert seat_with_action == 3
     assert bet_to_call == 20
-    assert status == :dealing_hole_cards
+    assert status == :starting_hand
   end
 
   test "new hand with two players" do
@@ -97,7 +97,7 @@ defmodule HandSetupTest do
     assert last_to_act == 1
     assert seat_with_action == 3
     assert bet_to_call == 20
-    assert status == :dealing_hole_cards
+    assert status == :starting_hand
   end
 
   test "new hand with five players" do
@@ -127,7 +127,7 @@ defmodule HandSetupTest do
     assert last_to_act == 9
     assert seat_with_action == 10
     assert bet_to_call == 20
-    assert status == :dealing_hole_cards
+    assert status == :starting_hand
   end
 
   test "new hand with five players when bb is seat 10" do
@@ -157,7 +157,7 @@ defmodule HandSetupTest do
     assert last_to_act == 3
     assert seat_with_action == 7
     assert bet_to_call == 20
-    assert status == :dealing_hole_cards
+    assert status == :starting_hand
   end
 
   defp generate_hand_id() do

@@ -61,13 +61,11 @@ defmodule StartHandTest do
              3
            ]
 
-    assert Enum.count(table_state.seat_map[1].cards) == 2
     assert table_state.sb_seat == 7
     assert table_state.bb_seat == 1
     assert table_state.last_to_act == 1
     assert table_state.seat_with_action == 3
-    assert table_state.bet_to_call == 5
-    assert table_state.status == :posting_blinds
+    assert table_state.status == :starting_hand
   end
 
   defp generate_hand_id() do

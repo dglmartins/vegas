@@ -173,8 +173,8 @@ defmodule TableServerTest do
 
     seat_map = TableServer.get_seat_map(table_id)
 
-    assert Enum.count(seat_map[1].cards) == 2
-    assert Enum.count(seat_map[3].cards) == 2
+    assert Enum.count(seat_map[1].cards) == 0
+    assert Enum.count(seat_map[3].cards) == 0
   end
 
   describe "ets" do
