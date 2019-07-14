@@ -3,7 +3,8 @@ defmodule Player do
             chip_count: nil,
             cards: [],
             status: :active,
-            chips_to_pot_current_bet_round: 0
+            chips_to_pot_current_bet_round: 0,
+            hand_rank_at_showdown: nil
 
   alias Player.{Create, Chips, Status}
 

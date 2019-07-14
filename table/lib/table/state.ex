@@ -5,7 +5,7 @@ defmodule Table.State do
             pre_action_min_bet: nil,
             ante: nil,
             game_type: nil,
-            pots: [%{seats: [:all_active], pot_value: 0}],
+            pots: [%Pot{}],
             deck: nil,
             community_cards: [],
             seat_with_action: nil,

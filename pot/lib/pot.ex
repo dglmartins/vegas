@@ -1,11 +1,13 @@
 defmodule Pot do
+  defstruct seats: [:all_active], pot_value: 0, winners: []
+
   @accepted_distribute_pot_status [:end_hand_no_showdown, :deal_to_showdown, :action_round_ended]
   @accepted_reset_pot_bets_status [:starting_hand]
 
   def reset_pots_bets(%{seat_map: seat_map, status: status} = table_state)
       when status in @accepted_reset_pot_bets_status do
     seat_map = reset_chips_to_current_pot(seat_map)
-    pots = [%{seats: [:all_active], pot_value: 0}]
+    pots = [%Pot{}]
 
     %{table_state | pots: pots, seat_map: seat_map, bet_to_call: 0}
   end
@@ -55,7 +57,7 @@ defmodule Pot do
            table_state
        ) do
     pots =
-      [%{seats: [:all_active], pot_value: pot_value + get_active_pot_value(seat_map)}] ++
+      [%Pot{seats: [:all_active], pot_value: pot_value + get_active_pot_value(seat_map)}] ++
         side_pots
 
     seat_map = reset_chips_to_current_pot(seat_map)
@@ -92,7 +94,7 @@ defmodule Pot do
     side_pot_value = pot_value + get_value_of_side_pot(seat_map, seat_lowest_all_in)
     pots = reset_active_pot_to_zero(pots)
     pots = add_seat_to_all_side_pots(pots, seat_lowest_all_in)
-    pots = pots ++ [%{seats: [:all_active, seat_lowest_all_in], pot_value: side_pot_value}]
+    pots = pots ++ [%Pot{seats: [:all_active, seat_lowest_all_in], pot_value: side_pot_value}]
     seat_map = subtract_lowest_all_in_bet(seat_map, seat_lowest_all_in)
     table_state = %{table_state | seat_map: seat_map, pots: pots}
     create_side_pots(table_state, other_all_in_seats_current_round)
@@ -125,7 +127,7 @@ defmodule Pot do
   end
 
   defp reset_active_pot_to_zero([_active_pot | sidepots]) do
-    [%{seats: [:all_active], pot_value: 0}] ++ sidepots
+    [%Pot{seats: [:all_active], pot_value: 0}] ++ sidepots
   end
 
   defp add_seat_to_all_side_pots([active_pot | side_pots], seat) do

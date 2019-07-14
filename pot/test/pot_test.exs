@@ -184,26 +184,26 @@ defmodule PotTest do
     bb_seat: 1,
     bet_to_call: 50,
     min_raise: 20,
-    pots: [%{seats: [:all_active], pot_value: 200}]
+    pots: [%Pot{seats: [:all_active], pot_value: 200}]
   }
 
   test "does not reset pots and bets when out of status" do
     table_state = Pot.reset_pots_bets(@table_state)
-    assert table_state.pots == [%{seats: [:all_active], pot_value: 200}]
+    assert table_state.pots == [%Pot{seats: [:all_active], pot_value: 200}]
     assert table_state.bet_to_call == 50
   end
 
   test "resets pots and bets " do
     table_state = %{@table_state | status: :starting_hand}
     table_state = Pot.reset_pots_bets(table_state)
-    assert table_state.pots == [%{seats: [:all_active], pot_value: 0}]
+    assert table_state.pots == [%Pot{seats: [:all_active], pot_value: 0}]
     assert table_state.bet_to_call == 0
     assert table_state.seat_map[1].chips_to_pot_current_bet_round == 0
   end
 
   test "distributes to pot, returns excess chips, when no one is all in" do
     table_state = Pot.distribute_to_pots(@table_state)
-    assert table_state.pots == [%{seats: [:all_active], pot_value: 400}]
+    assert table_state.pots == [%Pot{seats: [:all_active], pot_value: 400}]
     assert table_state.seat_map[1].chips_to_pot_current_bet_round == 0
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 0
 
@@ -223,10 +223,10 @@ defmodule PotTest do
     table_state = Pot.distribute_to_pots(table_state)
 
     assert table_state.pots == [
-             %{seats: [:all_active], pot_value: 40},
-             %{seats: [:all_active, 1, 3, 2, 7], pot_value: 260},
-             %{seats: [:all_active, 2, 7], pot_value: 20},
-             %{seats: [:all_active, 7], pot_value: 45}
+             %Pot{seats: [:all_active], pot_value: 40},
+             %Pot{seats: [:all_active, 1, 3, 2, 7], pot_value: 260},
+             %Pot{seats: [:all_active, 2, 7], pot_value: 20},
+             %Pot{seats: [:all_active, 7], pot_value: 45}
            ]
 
     assert table_state.seat_map[1].chips_to_pot_current_bet_round == 0
@@ -250,7 +250,7 @@ defmodule PotTest do
     table_state = %{@table_state | seat_map: @seat_map_three}
     table_state = Pot.distribute_to_pots(table_state)
 
-    assert table_state.pots == [%{seats: [:all_active], pot_value: 355}]
+    assert table_state.pots == [%Pot{seats: [:all_active], pot_value: 355}]
 
     assert table_state.seat_map[1].chips_to_pot_current_bet_round == 0
     assert table_state.seat_map[3].chips_to_pot_current_bet_round == 0

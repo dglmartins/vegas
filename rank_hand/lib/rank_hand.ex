@@ -18,7 +18,7 @@ defmodule RankHand do
     |> get_best_hand_ranked()
   end
 
-  defp get_best_hand_ranked(all_five_card_hands) do
+  def get_best_hand_ranked(all_five_card_hands) do
     all_five_card_hands
     |> Stream.map(&get_list_of_rank_suit_tuples/1)
     |> Stream.map(&sort_hand/1)
