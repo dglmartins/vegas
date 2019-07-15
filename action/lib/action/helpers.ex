@@ -56,7 +56,7 @@ defmodule Action.Helpers do
       when number_of_active_players == 1 and number_of_all_in_players == 0 do
     %{
       table_state
-      | status: :end_hand_no_showdown
+      | status: :distributing_chips
     }
   end
 
@@ -94,7 +94,7 @@ defmodule Action.Helpers do
       when number_of_active_players == 0 and number_of_all_in_players == 1 do
     %{
       table_state
-      | status: :end_hand_no_showdown
+      | status: :distributing_chips
     }
   end
 
@@ -118,7 +118,7 @@ defmodule Action.Helpers do
       when number_of_active_players <= 1 and number_of_all_in_players == 0 do
     %{
       table_state
-      | status: :end_hand_no_showdown
+      | status: :distributing_chips
     }
   end
 

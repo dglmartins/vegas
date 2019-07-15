@@ -107,11 +107,6 @@ defmodule FoldTest do
 
     assert table_state.seat_with_action == 1
 
-    assert table_state.status == :end_hand_no_showdown
-    # assert table_state.seat_map[3].chip_count == 175
-    # assert table_state.seat_map[7].chip_count == 225
-    # assert table_state.seat_map[1].chips_to_pot_current_bet_round == 25
-    # assert table_state.seat_map[3].chips_to_pot_current_bet_round == 5
-    # assert table_state.seat_map[7].chips_to_pot_current_bet_round == 15
+    assert table_state.status == :distributing_chips
   end
 end
