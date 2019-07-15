@@ -109,5 +109,7 @@ defmodule ShowdownTest do
              %Pot{seats: [:all_active, 2, 7], pot_value: 20, winners: [2]},
              %Pot{seats: [:all_active, 7], pot_value: 45, winners: [7]}
            ]
+
+    assert table_state.status == :distributing_chips
   end
 end

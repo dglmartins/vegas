@@ -3,12 +3,17 @@ defmodule Showdown do
         %{
           status: :showdown,
           community_cards:
-            [_board_card_1, _board_card_2, _board_card_3, _board_card_4, _board_card_5] = board
+            [_board_card_1, _board_card_2, _board_card_3, _board_card_4, _board_card_5] = _board
         } = table_state
       ) do
     table_state
-    |> Showdown.get_showdown_players_rank_hand()
-    |> Showdown.get_pot_winners()
+    |> get_showdown_players_rank_hand()
+    |> get_pot_winners()
+    |> mark_distributing_status()
+  end
+
+  def mark_distributing_status(table_state) do
+    %{table_state | status: :distributing_chips}
   end
 
   def get_pot_winners(
@@ -16,7 +21,7 @@ defmodule Showdown do
           seat_map: seat_map,
           status: :showdown,
           community_cards:
-            [_board_card_1, _board_card_2, _board_card_3, _board_card_4, _board_card_5] = board,
+            [_board_card_1, _board_card_2, _board_card_3, _board_card_4, _board_card_5] = _board,
           pots: pots
         } = table_state
       ) do
@@ -67,7 +72,7 @@ defmodule Showdown do
 
   def get_pot_seat_list(pot, active_seats_list) do
     [:all_active | all_in_pot_seats] = pot.seats
-    pot_seats_list = active_seats_list ++ all_in_pot_seats
+    active_seats_list ++ all_in_pot_seats
   end
 
   def get_winning_players_in_pot(pot_seats_list, seat_map) do
@@ -86,7 +91,7 @@ defmodule Showdown do
 
   def get_winning_seats(best_hand, seat_map) do
     seat_map
-    |> Enum.filter(fn {seat, player} ->
+    |> Enum.filter(fn {_seat, player} ->
       player.hand_rank_at_showdown == best_hand
     end)
     |> Enum.map(fn {seat, _player} -> seat end)
