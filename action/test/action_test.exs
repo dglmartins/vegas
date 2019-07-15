@@ -220,7 +220,7 @@ defmodule ActionTest do
     assert table_state.bet_to_call == 25
     assert table_state.seat_map[3].status == :fold
     assert table_state.seat_map[7].status == :fold
-    assert table_state.status == :distributing_chips
+    assert table_state.status == :end_hand_no_showdown
   end
 
   test "post_antes, post_blinds, raise, fold, fold" do
@@ -235,7 +235,7 @@ defmodule ActionTest do
     assert table_state.bet_to_call == 75
     assert table_state.seat_map[1].status == :fold
     assert table_state.seat_map[7].status == :fold
-    assert table_state.status == :distributing_chips
+    assert table_state.status == :end_hand_no_showdown
   end
 
   test "post_antes, post_blinds, call, call, call" do

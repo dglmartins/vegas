@@ -49,7 +49,7 @@ defmodule ShowdownTest do
     },
     9 => %{
       cards: [
-        %Card{rank: 2, show: false, suit: :hearts},
+        %Card{rank: 7, show: false, suit: :hearts},
         %Card{rank: 2, show: false, suit: :clubs}
       ],
       chip_count: 260,
@@ -60,7 +60,7 @@ defmodule ShowdownTest do
     },
     10 => %{
       cards: [
-        %Card{rank: 9, show: false, suit: :hearts},
+        %Card{rank: 7, show: false, suit: :clubs},
         %Card{rank: 9, show: false, suit: :spades}
       ],
       chip_count: 250,
@@ -100,11 +100,13 @@ defmodule ShowdownTest do
 
   test "replaces :all_active with active seats in pots" do
     table_state =
-      @table_state
-      |> Showdown.mark_hands_and_pot_winners()
+      IO.inspect(
+        @table_state
+        |> Showdown.mark_hands_and_pot_winners()
+      )
 
     assert table_state.pots == [
-             %Pot{seats: [:all_active], pot_value: 40, winners: [10]},
+             %Pot{seats: [:all_active], pot_value: 40, winners: [9, 10]},
              %Pot{seats: [:all_active, 1, 3, 2, 7], pot_value: 260, winners: [3]},
              %Pot{seats: [:all_active, 2, 7], pot_value: 20, winners: [2]},
              %Pot{seats: [:all_active, 7], pot_value: 45, winners: [7]}

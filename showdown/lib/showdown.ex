@@ -92,7 +92,8 @@ defmodule Showdown do
   def get_winning_seats(best_hand, seat_map) do
     seat_map
     |> Enum.filter(fn {_seat, player} ->
-      player.hand_rank_at_showdown == best_hand
+      player.hand_rank_at_showdown.main_rank == best_hand.main_rank and
+        player.hand_rank_at_showdown.tie_breakers == best_hand.tie_breakers
     end)
     |> Enum.map(fn {seat, _player} -> seat end)
   end
