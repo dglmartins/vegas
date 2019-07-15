@@ -92,18 +92,12 @@ defmodule Showdown do
     |> Enum.map(fn {seat, _player} -> seat end)
   end
 
-  def get_best_all_active_hand(
-        %{
-          seat_map: seat_map,
-          status: :showdown,
-          community_cards:
-            [_board_card_1, _board_card_2, _board_card_3, _board_card_4, _board_card_5] = board
-        } = table_state
-      ) do
-    seat_map
-    |> filter_active_players()
-    |> get_seat_hand_map(board)
-    |> Enum.max_by(fn {seat, rank} -> {rank.main_rank, rank.tie_breakers} end)
+  defp get_active_seats_list(seat_map) do
+    IO.inspect(
+      seat_map
+      |> filter_active_players()
+      |> get_seats()
+    )
   end
 
   defp filter_active_players(seat_map) do
@@ -111,24 +105,6 @@ defmodule Showdown do
     |> Enum.filter(fn {_seat, player} ->
       player.status == :active
     end)
-
-    # |> Enum.into(%{})
-  end
-
-  defp get_seat_hand_map(seat_map, board) do
-    seat_map
-    |> Enum.map(fn {seat, player} ->
-      {seat, RankHand.get_rank_hole_board(player.cards, board)}
-    end)
-    |> Enum.into(%{})
-  end
-
-  defp get_active_seats_list(seat_map) do
-    IO.inspect(
-      seat_map
-      |> filter_active_players()
-      |> get_seats()
-    )
   end
 
   defp get_seats([]) do

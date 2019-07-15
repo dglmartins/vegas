@@ -100,16 +100,14 @@ defmodule ShowdownTest do
 
   test "replaces :all_active with active seats in pots" do
     table_state =
-      IO.inspect(
-        @table_state
-        |> Showdown.mark_hands_and_pot_winners()
-      )
+      @table_state
+      |> Showdown.mark_hands_and_pot_winners()
 
-    # assert table_state.pots == [
-    #          %Pot{seats: [9, 10], pot_value: 40},
-    #          %Pot{seats: [9, 10, 1, 3, 2, 7], pot_value: 260},
-    #          %Pot{seats: [9, 10, 2, 7], pot_value: 20},
-    #          %Pot{seats: [9, 10, 7], pot_value: 45}
-    #        ]
+    assert table_state.pots == [
+             %Pot{seats: [:all_active], pot_value: 40, winners: [10]},
+             %Pot{seats: [:all_active, 1, 3, 2, 7], pot_value: 260, winners: [3]},
+             %Pot{seats: [:all_active, 2, 7], pot_value: 20, winners: [2]},
+             %Pot{seats: [:all_active, 7], pot_value: 45, winners: [7]}
+           ]
   end
 end
