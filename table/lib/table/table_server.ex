@@ -8,6 +8,8 @@ defmodule Table.TableServer do
   require Logger
 
   alias Table.{State}
+  # :timer.seconds(5)
+  @refresh_interval :timer.seconds(2)
 
   @timeout :timer.minutes(10)
 
@@ -28,13 +30,13 @@ defmodule Table.TableServer do
     GenServer.call(via_tuple(table_id), :get_dealer_seat)
   end
 
-  def move_dealer_to_seat({table_id, new_seat}) do
-    GenServer.call(via_tuple(table_id), {:move_dealer_to_seat, new_seat})
-  end
-
-  def move_dealer_to_left(table_id) do
-    GenServer.call(via_tuple(table_id), :move_dealer_to_left)
-  end
+  # def move_dealer_to_seat({table_id, new_seat}) do
+  #   GenServer.call(via_tuple(table_id), {:move_dealer_to_seat, new_seat})
+  # end
+  #
+  # def move_dealer_to_left(table_id) do
+  #   GenServer.call(via_tuple(table_id), :move_dealer_to_left)
+  # end
 
   def get_seat_map(table_id) do
     GenServer.call(via_tuple(table_id), :get_seat_map)
@@ -56,9 +58,9 @@ defmodule Table.TableServer do
     GenServer.call(via_tuple(table_id), {:leave_table, seat})
   end
 
-  def start_hand({table_id, hand_id}) do
-    GenServer.call(via_tuple(table_id), {:start_hand, hand_id})
-  end
+  # def start_hand(table_id) do
+  #   GenServer.call(via_tuple(table_id), :start_hand)
+  # end
 
   @doc """
   Returns a tuple used to register and lookup a table server process by id.
@@ -104,6 +106,14 @@ defmodule Table.TableServer do
   def handle_info(:server_next_step, %{status: :hand_to_start} = table_state) do
     IO.puts("Current status #{table_state.status}...")
     table_state = Dealer.start_hand(table_state)
+    Process.send_after(self(), :server_next_step, @refresh_interval)
+    {:noreply, table_state}
+  end
+
+  def handle_info(:server_next_step, table_state) do
+    # IO.puts("Current status #{table_state.status}...")
+    # table_state = Dealer.start_hand(table_state)
+    # Process.send_after(self(), :server_next_step, @refresh_interval)
     {:noreply, table_state}
   end
 
@@ -115,17 +125,17 @@ defmodule Table.TableServer do
     {:reply, table_state.dealer_seat, table_state, @timeout}
   end
 
-  def handle_call({:move_dealer_to_seat, new_seat}, _from, table_state) do
-    table_state = SeatHelpers.move_dealer_to_seat(table_state, new_seat)
-    :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, {:ok, table_state.dealer_seat}, table_state, @timeout}
-  end
-
-  def handle_call(:move_dealer_to_left, _from, table_state) do
-    table_state = SeatHelpers.move_dealer_to_left(table_state)
-    :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, {:ok, table_state.dealer_seat}, table_state, @timeout}
-  end
+  # def handle_call({:move_dealer_to_seat, new_seat}, _from, table_state) do
+  #   table_state = SeatHelpers.move_dealer_to_seat(table_state, new_seat)
+  #   :ets.insert(:tables_table, {my_table_id(), table_state})
+  #   {:reply, {:ok, table_state.dealer_seat}, table_state, @timeout}
+  # end
+  #
+  # def handle_call(:move_dealer_to_left, _from, table_state) do
+  #   table_state = SeatHelpers.move_dealer_to_left(table_state)
+  #   :ets.insert(:tables_table, {my_table_id(), table_state})
+  #   {:reply, {:ok, table_state.dealer_seat}, table_state, @timeout}
+  # end
 
   def handle_call(:get_seat_map, _from, table_state) do
     {:reply, table_state.seat_map, table_state, @timeout}
@@ -142,6 +152,7 @@ defmodule Table.TableServer do
   def handle_call({:join_table, player, desired_seat}, _from, table_state) do
     {status, table_state} = State.join_table(table_state, player, desired_seat)
     :ets.insert(:tables_table, {my_table_id(), table_state})
+    Process.send_after(self(), :server_next_step, @refresh_interval)
     {:reply, status, table_state, @timeout}
   end
 
@@ -151,11 +162,11 @@ defmodule Table.TableServer do
     {:reply, :ok, table_state, @timeout}
   end
 
-  def handle_call({:start_hand, hand_id}, _from, table_state) do
-    table_state = Dealer.start_hand(table_state, hand_id)
-    :ets.insert(:tables_table, {my_table_id(), table_state})
-    {:reply, :ok, table_state, @timeout}
-  end
+  # def handle_call(:start_hand, _from, table_state) do
+  #   table_state = Dealer.start_hand(table_state)
+  #   :ets.insert(:tables_table, {my_table_id(), table_state})
+  #   {:reply, :ok, table_state, @timeout}
+  # end
 
   def handle_info(:timeout, table_state) do
     IO.puts("Table timed out, table stopping")

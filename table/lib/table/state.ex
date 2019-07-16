@@ -17,7 +17,7 @@ defmodule Table.State do
             sb_seat: nil,
             bb_seat: nil,
             bet_to_call: 0,
-            current_hand_id: nil,
+            current_hand_id: 0,
             turn_time_left: nil,
             table_id: nil
 
