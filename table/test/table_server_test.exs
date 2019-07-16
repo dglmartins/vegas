@@ -59,7 +59,7 @@ defmodule TableServerTest do
     assert ante == @ante
   end
 
-  test "joins and leaves table, gets seat map" do
+  test "2 players join, table starts hand, deals hole cards" do
     table_id = generate_table_id()
 
     {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
@@ -69,28 +69,19 @@ defmodule TableServerTest do
     player_two = Player.new("Paula", 200)
 
     status = TableServer.join_table({table_id, player, 2})
-    status_two = TableServer.join_table({table_id, player_two, 2})
+    tally = TableServer.get_tally(table_id)
 
-    assert status == :ok
-    assert status_two == :seat_taken
+    assert tally.status == :waiting
+    status_two = TableServer.join_table({table_id, player_two, 3})
+    tally = TableServer.get_tally(table_id)
 
-    seat_map = TableServer.get_seat_map(table_id)
+    assert tally.status == :hand_to_start
 
-    assert seat_map[2] == player
+    :timer.sleep(500)
 
-    :ok = TableServer.leave_table({table_id, 2})
+    tally = IO.inspect(TableServer.get_tally(table_id))
 
-    seat_map = TableServer.get_seat_map(table_id)
-
-    assert seat_map[2] == nil
-
-    status_two = TableServer.join_table({table_id, player_two, 2})
-
-    assert status_two == :ok
-
-    seat_map = TableServer.get_seat_map(table_id)
-
-    assert seat_map[2] == player_two
+    assert tally.status == :posting_antes
   end
 
   # test "does not start at hand with no dealer" do

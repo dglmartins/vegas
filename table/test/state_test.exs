@@ -50,7 +50,7 @@ defmodule StateTest do
     {_reply, table} = State.join_table(table, player, 2)
     assert table.status == :waiting
 
-    {_reply, table} = IO.inspect(State.join_table(table, player_two, 3))
+    {_reply, table} = State.join_table(table, player_two, 3)
 
     assert table.status == :hand_to_start
     assert table.seat_map[2] == player

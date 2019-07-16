@@ -9,7 +9,7 @@ defmodule Table.TableServer do
 
   alias Table.{State}
   # :timer.seconds(5)
-  @refresh_interval :timer.seconds(2)
+  @refresh_interval 100
 
   @timeout :timer.minutes(10)
 
@@ -40,6 +40,10 @@ defmodule Table.TableServer do
 
   def get_seat_map(table_id) do
     GenServer.call(via_tuple(table_id), :get_seat_map)
+  end
+
+  def get_tally(table_id) do
+    GenServer.call(via_tuple(table_id), :get_tally)
   end
 
   def get_game_type(table_id) do
@@ -98,14 +102,25 @@ defmodule Table.TableServer do
     {:ok, table, @timeout}
   end
 
+  def handle_call(:get_tally, _from, table_state) do
+    {:reply, tally(table_state), table_state, @timeout}
+  end
+
   def handle_info(:server_next_step, %{status: :waiting} = table_state) do
-    IO.puts("Current status #{table_state.status}...")
+    IO.puts("Current status waiting...")
     {:noreply, table_state}
   end
 
   def handle_info(:server_next_step, %{status: :hand_to_start} = table_state) do
     IO.puts("Current status #{table_state.status}...")
     table_state = Dealer.start_hand(table_state)
+    Process.send_after(self(), :server_next_step, @refresh_interval)
+    {:noreply, table_state}
+  end
+
+  def handle_info(:server_next_step, %{status: :dealing_hole_cards} = table_state) do
+    IO.puts("Current status #{table_state.status}...")
+    table_state = Dealer.deal_hole_cards(table_state)
     Process.send_after(self(), :server_next_step, @refresh_interval)
     {:noreply, table_state}
   end
@@ -188,5 +203,9 @@ defmodule Table.TableServer do
 
   defp my_table_id do
     Registry.keys(Table.TableRegistry, self()) |> List.first()
+  end
+
+  def tally(%{status: status} = table_state) do
+    table_state
   end
 end
