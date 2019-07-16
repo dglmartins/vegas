@@ -43,6 +43,17 @@ defmodule Table.State do
     table_state
   end
 
+  def join_table(
+        %{seat_map: seat_map, status: :waiting} = table_state,
+        player,
+        desired_seat,
+        true = empty_seat?
+      ) do
+    enough_to_start? = Enum.count(seat_map) >= 2
+    join_table(table_state, player, desired_seat, empty_seat?, enough_to_start?)
+    # {:ok, %{table_state | seat_map: Map.put(seat_map, desired_seat, player)}}
+  end
+
   def join_table(%{seat_map: seat_map} = table_state, player, desired_seat, true = _empty_seat?) do
     {:ok, %{table_state | seat_map: Map.put(seat_map, desired_seat, player)}}
   end
@@ -50,6 +61,27 @@ defmodule Table.State do
   def join_table(table_state, _player, _desired_seat, _false = _empty_seat?) do
     IO.puts("seat taken")
     {:seat_taken, table_state}
+  end
+
+  def join_table(
+        %{seat_map: seat_map, status: :waiting} = table_state,
+        player,
+        desired_seat,
+        true = _empty_seat?,
+        true = _enough_to_start?
+      ) do
+    {:ok,
+     %{table_state | seat_map: Map.put(seat_map, desired_seat, player), status: :starting_hand}}
+  end
+
+  def join_table(
+        %{seat_map: seat_map, status: :waiting} = table_state,
+        player,
+        desired_seat,
+        true = _empty_seat?,
+        false = _enough_to_start
+      ) do
+    {:ok, %{table_state | seat_map: Map.put(seat_map, desired_seat, player)}}
   end
 
   def leave_table(%{seat_map: seat_map} = table_state, seat) do
