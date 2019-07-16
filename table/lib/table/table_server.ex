@@ -127,7 +127,7 @@ defmodule Table.TableServer do
 
   def handle_info(:server_next_step, %{status: :posting_antes} = table_state) do
     IO.puts("Current status #{table_state.status}...")
-    table_state = Dealer.deal_hole_cards(table_state)
+    table_state = Action.post_antes(table_state)
     Process.send_after(self(), :server_next_step, @refresh_interval)
     {:noreply, table_state}
   end

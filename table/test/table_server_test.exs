@@ -59,7 +59,7 @@ defmodule TableServerTest do
     assert ante == @ante
   end
 
-  test "2 players join, table starts hand, deals hole cards" do
+  test "2 players join, table starts hand, deals hole cards, posts antes" do
     table_id = generate_table_id()
 
     {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
@@ -81,7 +81,9 @@ defmodule TableServerTest do
 
     tally = IO.inspect(TableServer.get_tally(table_id))
 
-    assert tally.status == :posting_antes
+    assert tally.status == :posting_blinds
+    assert tally.seat_map[2].chip_count == 198
+    assert tally.seat_map[3].chip_count == 198
   end
 
   # test "does not start at hand with no dealer" do
