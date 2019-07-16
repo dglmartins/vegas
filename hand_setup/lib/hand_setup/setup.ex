@@ -1,12 +1,13 @@
 defmodule HandSetup.Setup do
-  @accepted_start_hand_status [:starting_hand, :hand_finished]
+  @accepted_start_hand_status [:hand_to_start]
 
   alias HandSetup.SeatSetup
 
   def new(
-        %{seat_map: seat_map, dealer_seat: dealer_seat} = table_state,
+        %{seat_map: seat_map, dealer_seat: dealer_seat, status: status} = table_state,
         current_hand_id
-      ) do
+      )
+      when status in @accepted_start_hand_status do
     %{
       table_state
       | seat_with_action: SeatSetup.get_first_to_act_first_round(dealer_seat, seat_map),
@@ -17,5 +18,10 @@ defmodule HandSetup.Setup do
         current_hand_id: current_hand_id,
         status: :dealing_hole_cards
     }
+  end
+
+  def new(table_state, _current_hand_id) do
+    IO.puts("Table not ready to start hand")
+    table_state
   end
 end
