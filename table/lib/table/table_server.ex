@@ -132,6 +132,13 @@ defmodule Table.TableServer do
     {:noreply, table_state}
   end
 
+  def handle_info(:server_next_step, %{status: :posting_blinds} = table_state) do
+    IO.puts("Current status #{table_state.status}...")
+    table_state = Action.post_blinds(table_state)
+    Process.send_after(self(), :server_next_step, @refresh_interval)
+    {:noreply, table_state}
+  end
+
   def handle_info(:server_next_step, table_state) do
     # IO.puts("Current status #{table_state.status}...")
     # table_state = Dealer.start_hand(table_state)

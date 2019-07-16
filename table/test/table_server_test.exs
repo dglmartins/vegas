@@ -59,7 +59,7 @@ defmodule TableServerTest do
     assert ante == @ante
   end
 
-  test "2 players join, table starts hand, deals hole cards, posts antes" do
+  test "2 players join, table starts hand, deals hole cards, posts antes, posts blinds" do
     table_id = generate_table_id()
 
     {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
@@ -81,9 +81,39 @@ defmodule TableServerTest do
 
     tally = IO.inspect(TableServer.get_tally(table_id))
 
-    assert tally.status == :posting_blinds
-    assert tally.seat_map[2].chip_count == 198
-    assert tally.seat_map[3].chip_count == 198
+    assert tally.status == :action_opened
+    assert tally.seat_map[2].chip_count == 178
+    assert tally.seat_map[3].chip_count == 188
+    assert tally.seat_with_action == 3
+    assert tally.dealer_seat == 3
+  end
+
+  test "2 players join, table starts hand, deals hole cards, posts antes, one player is all in -> status is :deal_to_showdown" do
+    table_id = generate_table_id()
+
+    {:ok, _pid} = TableServer.start_link(table_id, @min_bet, @ante, @game_type)
+
+    player = Player.new("Danilo", 1)
+
+    player_two = Player.new("Paula", 3)
+
+    status = TableServer.join_table({table_id, player, 2})
+    tally = TableServer.get_tally(table_id)
+
+    assert tally.status == :waiting
+    status_two = TableServer.join_table({table_id, player_two, 3})
+    tally = TableServer.get_tally(table_id)
+
+    assert tally.status == :hand_to_start
+
+    :timer.sleep(500)
+
+    tally = IO.inspect(TableServer.get_tally(table_id))
+
+    assert tally.status == :deal_to_showdown
+    assert tally.seat_map[2].chip_count == 0
+    assert tally.seat_map[2].status == :all_in
+    assert tally.seat_map[3].chip_count == 1
   end
 
   # test "does not start at hand with no dealer" do
