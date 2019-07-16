@@ -8,8 +8,6 @@ defmodule HandSetup.Setup do
         current_hand_id
       )
       when status in @accepted_start_hand_status do
-    IO.puts(current_hand_id)
-
     %{
       table_state
       | seat_with_action: SeatSetup.get_first_to_act_first_round(dealer_seat, seat_map),
