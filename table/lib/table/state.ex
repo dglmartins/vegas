@@ -49,7 +49,7 @@ defmodule Table.State do
         desired_seat,
         true = empty_seat?
       ) do
-    enough_to_start? = Enum.count(seat_map) >= 2
+    enough_to_start? = Enum.count(seat_map) >= 1
     join_table(table_state, player, desired_seat, empty_seat?, enough_to_start?)
     # {:ok, %{table_state | seat_map: Map.put(seat_map, desired_seat, player)}}
   end
@@ -71,7 +71,7 @@ defmodule Table.State do
         true = _enough_to_start?
       ) do
     {:ok,
-     %{table_state | seat_map: Map.put(seat_map, desired_seat, player), status: :starting_hand}}
+     %{table_state | seat_map: Map.put(seat_map, desired_seat, player), status: :hand_to_start}}
   end
 
   def join_table(

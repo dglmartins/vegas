@@ -41,6 +41,21 @@ defmodule StateTest do
     assert table.seat_map[2] == player
   end
 
+  test "two players status goes to hand_to_start" do
+    table = State.new(@min_bet, @ante, @game_type)
+    player = Player.new("Danilo", 200)
+    player_two = Player.new("Paula", 200)
+
+    {_reply, table} = State.join_table(table, player, 2)
+    assert table.status == :waiting
+
+    {_reply, table} = IO.inspect(State.join_table(table, player_two, 3))
+
+    assert table.status == :hand_to_start
+    assert table.seat_map[2] == player
+    assert table.seat_map[3] == player_two
+  end
+
   test "player leaves" do
     table = State.new(@min_bet, @ante, @game_type)
     player = Player.new("Danilo", 200)
