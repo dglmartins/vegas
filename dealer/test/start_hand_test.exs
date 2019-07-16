@@ -30,7 +30,7 @@ defmodule StartHandTest do
 
   @table_state %{
     dealer_seat: 3,
-    status: :waiting,
+    status: :hand_to_start,
     game_type: :nl_holdem,
     pre_action_min_bet: 20,
     ante: 5,
@@ -42,29 +42,29 @@ defmodule StartHandTest do
     bb_seat: nil,
     bet_to_call: 20,
     min_raise: 20,
-    current_hand_id: nil,
+    current_hand_id: 0,
     deck: nil
   }
 
   test "starts a nl_holdem hand" do
-    hand_id = generate_hand_id()
+    table_state = StartHand.start_hand(@table_state)
 
-    table_state = StartHand.start_hand(@table_state, hand_id)
-
-    assert [table_state.pre_action_min_bet, table_state.ante, table_state.dealer_seat] == [
+    assert [
+             table_state.pre_action_min_bet,
+             table_state.ante,
+             table_state.dealer_seat,
+             table_state.current_hand_id
+           ] == [
              20,
              5,
-             3
+             3,
+             1
            ]
 
     assert table_state.sb_seat == 7
     assert table_state.bb_seat == 1
     assert table_state.last_to_act == 1
     assert table_state.seat_with_action == 3
-    assert table_state.status == :starting_hand
-  end
-
-  defp generate_hand_id() do
-    "hand-#{:rand.uniform(1_000_000)}"
+    assert table_state.status == :dealing_hole_cards
   end
 end

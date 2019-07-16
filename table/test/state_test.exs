@@ -7,9 +7,10 @@ defmodule StateTest do
   @min_bet 10
   @ante 0
   @game_type :nl_holdem
+  @table_id "test_id"
 
   test "creates a table given a table id" do
-    table = State.new(@min_bet, @ante, @game_type)
+    table = State.new(@min_bet, @ante, @game_type, @table_id)
 
     assert table.status == :waiting
     assert table.pre_action_min_bet == 10
@@ -25,7 +26,7 @@ defmodule StateTest do
   end
 
   test "player joins cannot join taken seat" do
-    table = State.new(@min_bet, @ante, @game_type)
+    table = State.new(@min_bet, @ante, @game_type, @table_id)
     player = Player.new("Danilo", 200)
 
     {status, table} = State.join_table(table, player, 2)
@@ -42,7 +43,7 @@ defmodule StateTest do
   end
 
   test "two players status goes to hand_to_start" do
-    table = State.new(@min_bet, @ante, @game_type)
+    table = State.new(@min_bet, @ante, @game_type, @table_id)
     player = Player.new("Danilo", 200)
     player_two = Player.new("Paula", 200)
 
@@ -57,7 +58,7 @@ defmodule StateTest do
   end
 
   test "player leaves" do
-    table = State.new(@min_bet, @ante, @game_type)
+    table = State.new(@min_bet, @ante, @game_type, @table_id)
     player = Player.new("Danilo", 200)
 
     {status, table} = State.join_table(table, player, 2)

@@ -83,7 +83,7 @@ defmodule Table.TableServer do
     table =
       case :ets.lookup(:tables_table, table_id) do
         [] ->
-          table = State.new(min_bet, ante, game_type)
+          table = State.new(min_bet, ante, game_type, table_id)
           :ets.insert(:tables_table, {table_id, table})
           table
 
@@ -95,6 +95,21 @@ defmodule Table.TableServer do
 
     {:ok, table, @timeout}
   end
+
+  def handle_info(:server_next_step, %{status: :waiting} = table_state) do
+    IO.puts("Current status #{table_state.status}...")
+    {:noreply, table_state}
+  end
+
+  def handle_info(:server_next_step, %{status: :hand_to_start} = table_state) do
+    IO.puts("Current status #{table_state.status}...")
+    table_state = Dealer.start_hand(table_state)
+    {:noreply, table_state}
+  end
+
+  # defp schedule_refresh do
+  #   Process.send_after(self(), :refresh, @refresh_interval)
+  # end
 
   def handle_call(:get_dealer_seat, _from, table_state) do
     {:reply, table_state.dealer_seat, table_state, @timeout}

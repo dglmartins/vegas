@@ -7,6 +7,7 @@ defmodule TableServerTest do
   @min_bet 20
   @ante 2
   @game_type :nl_holdem
+  @table_id "test_id"
 
   test "spawning a table server process" do
     table_id = generate_table_id()
@@ -60,11 +61,11 @@ defmodule TableServerTest do
 
     {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
 
-    assert new_seat == 7
+    assert new_seat == 2
 
     {:ok, new_seat} = TableServer.move_dealer_to_left(table_id)
 
-    assert new_seat == 2
+    assert new_seat == 7
   end
 
   test "gets game type, gets min bet, gets ante" do
@@ -189,7 +190,7 @@ defmodule TableServerTest do
     test "gets the table initial state from ETS if previously stored" do
       table_id = generate_table_id()
 
-      state = State.new(@min_bet, @ante, @game_type)
+      state = State.new(@min_bet, @ante, @game_type, @table_id)
 
       new_state = %{state | game_type: :horse}
       :ets.insert(:tables_table, {table_id, new_state})

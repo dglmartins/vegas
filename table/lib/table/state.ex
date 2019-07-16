@@ -13,23 +13,24 @@ defmodule Table.State do
             seat_map: %{},
             min_raise: nil,
             table_id: nil,
-            hand_id: nil,
             current_bet_round: nil,
             sb_seat: nil,
             bb_seat: nil,
             bet_to_call: 0,
             current_hand_id: nil,
-            turn_time_left: nil
+            turn_time_left: nil,
+            table_id: nil
 
   # deck_pid: nil
   @accepted_dealer_status [:active]
-  def new(pre_action_min_bet, ante, game_type) do
+  def new(pre_action_min_bet, ante, game_type, table_id) do
     %Table.State{
       # seat_map: SeatMap.new_empty_table(),
       ante: ante,
       pre_action_min_bet: pre_action_min_bet,
       game_type: game_type,
-      min_raise: pre_action_min_bet
+      min_raise: pre_action_min_bet,
+      table_id: table_id
     }
   end
 
@@ -70,8 +71,15 @@ defmodule Table.State do
         true = _empty_seat?,
         true = _enough_to_start?
       ) do
-    {:ok,
-     %{table_state | seat_map: Map.put(seat_map, desired_seat, player), status: :hand_to_start}}
+    table_state = %{
+      table_state
+      | seat_map: Map.put(seat_map, desired_seat, player),
+        status: :hand_to_start
+    }
+
+    table_state = SeatHelpers.move_dealer_to_seat(table_state, desired_seat)
+
+    {:ok, table_state}
   end
 
   def join_table(
